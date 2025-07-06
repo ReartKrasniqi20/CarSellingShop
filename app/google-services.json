@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "762532210662",
+    "project_id": "carimportshop",
+    "storage_bucket": "carimportshop.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:762532210662:android:34d614944a8354edc89827",
+        "android_client_info": {
+          "package_name": "com.example.carsellingshop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJyX_qPHOTgxGLsUG-z_VS-cEPel6KRT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
