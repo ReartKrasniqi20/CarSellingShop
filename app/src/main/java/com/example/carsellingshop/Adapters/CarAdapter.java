@@ -3,6 +3,7 @@ package com.example.carsellingshop.Adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,13 +36,22 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         Car car = carList.get(position);
 
         holder.carModelTextView.setText(car.getModel());
-        holder.carPriceTextView.setText("Price: $" + car.getPrice());
+        holder.carPriceTag.setText("$" + car.getPrice());
+        holder.tvDiscount.setText("Discount - " + car.getDiscount() + "%");
+        holder.tvDescription.setText(car.getDescription());
 
-        // Load image with Glide
         Glide.with(holder.itemView.getContext())
                 .load(car.getImageUrl())
-                .placeholder(R.drawable.ic_launcher_foreground) // Optional: default image
+                .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.carImageView);
+
+        holder.btnDetails.setOnClickListener(v -> {
+            // TODO: Handle details click
+        });
+
+        holder.btnOrder.setOnClickListener(v -> {
+            // TODO: Handle order click
+        });
     }
 
     @Override
@@ -51,13 +61,18 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
 
     public static class CarViewHolder extends RecyclerView.ViewHolder {
         ImageView carImageView;
-        TextView carModelTextView, carPriceTextView;
+        TextView carModelTextView, carPriceTag, tvDiscount, tvDescription;
+        Button btnDetails, btnOrder;
 
         public CarViewHolder(@NonNull View itemView) {
             super(itemView);
             carImageView = itemView.findViewById(R.id.carImageView);
             carModelTextView = itemView.findViewById(R.id.carModelTextView);
-            carPriceTextView = itemView.findViewById(R.id.carPriceTextView);
+            carPriceTag = itemView.findViewById(R.id.tvPriceTag);
+            tvDiscount = itemView.findViewById(R.id.tvDiscount);
+            tvDescription = itemView.findViewById(R.id.tvDescription);
+            btnDetails = itemView.findViewById(R.id.btnDetails);
+            btnOrder = itemView.findViewById(R.id.btnOrder);
         }
     }
 }

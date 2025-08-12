@@ -6,16 +6,18 @@
     android:orientation="vertical">
 
     <!-- Top Toolbar -->
+
+    <!-- Car List RecyclerView -->
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/topToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/purple_500"
-        android:titleTextColor="@android:color/white"
-        app:title="CAR SELLING SHOP IDA"
-        android:elevation="4dp" />
+        android:elevation="4dp"
+        android:titleTextColor="@color/white"
+        app:title="CAR IMPORT SHOP IDA" />
 
-    <!-- Car List RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/carRecyclerView"
         android:layout_width="match_parent"

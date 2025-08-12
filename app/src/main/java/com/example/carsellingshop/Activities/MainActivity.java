@@ -5,8 +5,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;  // ✅ Correct Toolbar import
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carsellingshop.Adapters.CarAdapter;
@@ -22,37 +22,34 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView carRecyclerView;
     private CarAdapter carAdapter;
-    private List<Car> carList = new ArrayList<>();
-    private CarService carService = new CarService();
+    private final List<Car> carList = new ArrayList<>();
+    private final CarService carService = new CarService();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Set up Toolbar
         Toolbar toolbar = findViewById(R.id.topToolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("CAR SELLING SHOP IDA");
         }
 
-        // Set up RecyclerView
+        // Use the field, not a new local variable
         carRecyclerView = findViewById(R.id.carRecyclerView);
-        carRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        carRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         carAdapter = new CarAdapter(carList);
         carRecyclerView.setAdapter(carAdapter);
 
-        // Load data
         loadCars();
     }
 
     private void loadCars() {
         carService.fetchAllCars(querySnapshot -> {
             carList.clear();
-            for (QueryDocumentSnapshot document : querySnapshot) {
-                Car car = document.toObject(Car.class);
-                carList.add(car);
+            for (QueryDocumentSnapshot doc : querySnapshot) {
+                carList.add(doc.toObject(Car.class));
             }
             carAdapter.notifyDataSetChanged();
         }, e -> Toast.makeText(this, "Failed to load cars: " + e.getMessage(), Toast.LENGTH_LONG).show());
