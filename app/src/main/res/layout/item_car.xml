@@ -67,30 +67,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
 
             <Button
                 android:id="@+id/btnDetails"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
+                android:minWidth="0dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
                 android:text="CHECK DETAILS"
+                android:textAllCaps="true"
+                android:textSize="11sp"
                 android:textColor="@android:color/white"
-                android:backgroundTint="@android:color/holo_red_dark" />
+                android:background="@drawable/btn_red_pill"/>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content"/>
 
             <Button
                 android:id="@+id/btnOrder"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
+                android:minWidth="0dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
                 android:text="ORDER"
+                android:textAllCaps="true"
+                android:textSize="11sp"
                 android:textColor="@android:color/white"
-                android:backgroundTint="@android:color/holo_green_dark" />
+                android:background="@drawable/btn_green_pill"/>
         </LinearLayout>
-
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

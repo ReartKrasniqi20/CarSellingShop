@@ -14,7 +14,9 @@ import com.bumptech.glide.Glide;
 import com.example.carsellingshop.Model.Car;
 import com.example.carsellingshop.R;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
 
@@ -35,22 +37,41 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     public void onBindViewHolder(@NonNull CarViewHolder holder, int position) {
         Car car = carList.get(position);
 
-        holder.carModelTextView.setText(car.getModel());
-        holder.carPriceTag.setText("$" + car.getPrice());
-        holder.tvDiscount.setText("Discount - " + car.getDiscount() + "%");
-        holder.tvDescription.setText(car.getDescription());
+        holder.carModelTextView.setText(car.getModel() == null ? "" : car.getModel());
+
+        // Price: 55,000.00 style
+        String priceText = NumberFormat.getCurrencyInstance(Locale.US)
+                .format(car.getPrice());
+        holder.carPriceTag.setText(priceText);
+
+
+        int disc = (int) car.getDiscount();
+        holder.tvDiscount.setText(disc > 0 ? "Discount - " + disc + "%" : "");
+
+
+        holder.tvDescription.setText(
+                car.getDescription() != null ? car.getDescription() : ""
+        );
 
         Glide.with(holder.itemView.getContext())
                 .load(car.getImageUrl())
+                .fitCenter() // show full image
                 .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_launcher_foreground)
                 .into(holder.carImageView);
 
         holder.btnDetails.setOnClickListener(v -> {
-            // TODO: Handle details click
+            int pos = holder.getBindingAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                // TODO open details for carList.get(pos)
+            }
         });
 
         holder.btnOrder.setOnClickListener(v -> {
-            // TODO: Handle order click
+            int pos = holder.getBindingAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                // TODO start order flow for carList.get(pos)
+            }
         });
     }
 

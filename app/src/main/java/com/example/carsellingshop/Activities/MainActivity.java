@@ -21,6 +21,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView carRecyclerView;
+
     private CarAdapter carAdapter;
     private final List<Car> carList = new ArrayList<>();
     private final CarService carService = new CarService();
