@@ -7,12 +7,12 @@ public class Car {
     private double price;
     private String imageUrl;
     private String description;
-    private double discount;
+    private int discount;
 
     // Required empty constructor for Firestore
     public Car() { }
 
-    public Car(String id, String model, double price, String imageUrl, String description, double discount) {
+    public Car(String id, String model, double price, String imageUrl, String description, int discount) {
         this.id = id;
         this.model = model;
         this.price = price;
@@ -38,5 +38,5 @@ public class Car {
     public void setDescription(String description) { this.description = description; }
 
     public double getDiscount() { return discount; }
-    public void setDiscount(double discount) { this.discount = discount; }
+    public void setDiscount(int discount) { this.discount = discount; }
 }
