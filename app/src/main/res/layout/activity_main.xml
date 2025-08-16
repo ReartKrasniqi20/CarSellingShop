@@ -14,14 +14,19 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topToolbar"
+            style="@style/MyToolbarStyle"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/purple_500"
-            android:title="CAR IMPORT IDA"
-            android:titleTextColor="@android:color/white"
-            app:menu="@menu/top_app_bar"
-            app:navigationIcon="@drawable/ic_menu_24"
-            app:titleCentered="true" />
+            android:backgroundTint="@color/grey"
+            app:title="CAR IMPORT IDA"
+            app:titleCentered="false"
+        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetStart="0dp"
+        app:titleMarginStart="15dp"
+        app:menu="@menu/top_app_bar"
+        app:navigationIcon="@drawable/ic_menu_24" />
+
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Car list -->

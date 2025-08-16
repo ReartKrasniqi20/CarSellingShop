@@ -39,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
         // Toolbar setup
         Toolbar toolbar = findViewById(R.id.topToolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("CAR SELLING SHOP IDA");
-        }
 
         // Tint ONLY the navigation icon here (it exists immediately)
         Drawable nav = toolbar.getNavigationIcon();
