@@ -28,8 +28,6 @@
             app:navigationIcon="@drawable/ic_menu_24" />
 
 
-
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/carRecyclerView"
             android:layout_width="match_parent"
