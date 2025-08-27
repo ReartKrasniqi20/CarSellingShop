@@ -24,8 +24,10 @@ import com.example.carsellingshop.Model.Car;
 import com.example.carsellingshop.R;
 import com.example.carsellingshop.Services.CarService;
 import com.google.android.material.navigation.NavigationView;
+
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -73,12 +75,19 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_logout) {
                 Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
                 // TODO: FirebaseAuth.getInstance().signOut();
+
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(MainActivity.this, LogInActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
 
                     finish();
+
+            }
+            drawerLayout.closeDrawers();
+            return true;
+        });
+
 
             }
             drawerLayout.closeDrawers();
@@ -169,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
 
     @Override
     protected void onStart() {
