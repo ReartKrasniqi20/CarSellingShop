@@ -5,14 +5,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -36,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private CarAdapter carAdapter;
     private final CarService carService = new CarService();
 
-    // optional drawer (works only if your layout has these views)
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
@@ -49,66 +46,63 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.topToolbar);
         setSupportActionBar(toolbar);
 
-        // Try to wire a Drawer if present, else fall back to popup menu
-        /* drawerLayout = findViewById(R.id.drawerLayout);
+        // Drawer views
+        drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
 
-        if (drawerLayout != null && navigationView != null) {
-            // hamburger opens drawer
-            toolbar.setNavigationOnClickListener(v ->
-                    drawerLayout.openDrawer(GravityCompat.START));
+        // Hamburger opens drawer
+        toolbar.setNavigationOnClickListener(v ->
+                drawerLayout.openDrawer(GravityCompat.START));
 
-            navigationView.setNavigationItemSelectedListener(item -> {
-                item.setChecked(true);
-                int id = item.getItemId();
-                if (id == R.id.nav_home) {
-                    Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_favorites) {
-                    Toast.makeText(this, "Favorites", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_orders) {
-                    Toast.makeText(this, "Orders", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_logout) {
-                    Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
-                    // TODO: FirebaseAuth.getInstance().signOut();
-                }
-                drawerLayout.closeDrawers();
-                return true;
-            });
-        } else {
-            // No drawer in layout: tint nav icon & show popup menu on click
-            Drawable nav = toolbar.getNavigationIcon();
-            if (nav != null) nav.setTint(Color.WHITE);
-            toolbar.setNavigationOnClickListener(this::showLeftPopupMenu);
-        }
-    */
+        // Drawer item clicks
+        navigationView.setNavigationItemSelectedListener(item -> {
+            item.setChecked(true);
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
+                // TODO: show all cars (already default)
+            } else if (id == R.id.nav_favorites) {
+                Toast.makeText(this, "Favorites (coming soon)", Toast.LENGTH_SHORT).show();
+                // TODO: filter adapter to only favorite cars
+            } else if (id == R.id.nav_orders) {
+                Toast.makeText(this, "Orders (coming soon)", Toast.LENGTH_SHORT).show();
+                // TODO: open Orders screen
+            } else if (id == R.id.nav_logout) {
+                Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
+                // TODO: FirebaseAuth.getInstance().signOut();
+            }
+            drawerLayout.closeDrawers();
+            return true;
+        });
+
         // RecyclerView
         carRecyclerView = findViewById(R.id.carRecyclerView);
         carRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         carRecyclerView.setHasFixedSize(true);
-        carAdapter = new CarAdapter(new ArrayList<>());   // adapter holds its own lists for filtering
+        carAdapter = new CarAdapter(new ArrayList<>());
         carRecyclerView.setAdapter(carAdapter);
 
         loadCars();
     }
 
-    // Top-right menu (search/profile) + SearchView styling
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.top_app_bar, menu);
 
+        // SearchView setup
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView sv = (SearchView) searchItem.getActionView();
-        sv.setQueryHint("Search cars…");
+        sv.setQueryHint("Search cars...");
         sv.setIconifiedByDefault(true);
         sv.setMaxWidth(Integer.MAX_VALUE);
 
-        // make the search text/hint white
+        // White text/hint inside SearchView
         EditText et = sv.findViewById(androidx.appcompat.R.id.search_src_text);
         if (et != null) {
             et.setTextColor(Color.WHITE);
-            et.setHintTextColor(Color.parseColor("#B3FFFFFF")); // 70% white
+            et.setHintTextColor(Color.parseColor("#B3FFFFFF"));
         }
-        // tint internal icons white
+        // White icons inside SearchView
         int white = Color.WHITE;
         ImageView mag   = sv.findViewById(androidx.appcompat.R.id.search_mag_icon);
         ImageView close = sv.findViewById(androidx.appcompat.R.id.search_close_btn);
@@ -119,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         if (go    != null) go.setColorFilter(white);
         if (voice != null) voice.setColorFilter(white);
 
-        // filtering
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override public boolean onQueryTextSubmit(String query) {
                 carAdapter.getFilter().filter(query, count -> {
@@ -136,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // reset list when search collapses
+        // Reset when collapsed
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override public boolean onMenuItemActionExpand(MenuItem item) { return true; }
             @Override public boolean onMenuItemActionCollapse(MenuItem item) {
@@ -148,21 +141,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // (only used when there is no DrawerLayout)
-    private void showLeftPopupMenu(View anchor) {
-        PopupMenu popup = new PopupMenu(this, anchor);
-        popup.getMenuInflater().inflate(R.menu.menu_popup, popup.getMenu());
-        popup.setOnMenuItemClickListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.popup_home)         { Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show(); return true; }
-            else if (id == R.id.popup_categories){ Toast.makeText(this, "Categories", Toast.LENGTH_SHORT).show(); return true; }
-            else if (id == R.id.popup_settings){ Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show(); return true; }
-            else if (id == R.id.popup_logout)  { Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show(); return true; }
-            return false;
-        });
-        popup.show();
-    }
-
     private void loadCars() {
         carService.fetchAllCars(querySnapshot -> {
             List<Car> fresh = new ArrayList<>();
@@ -171,5 +149,14 @@ public class MainActivity extends AppCompatActivity {
             }
             carAdapter.replaceData(fresh);
         }, e -> Toast.makeText(this, "Failed to load cars: " + e.getMessage(), Toast.LENGTH_LONG).show());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
