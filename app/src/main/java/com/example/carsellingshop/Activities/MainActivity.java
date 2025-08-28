@@ -24,8 +24,14 @@ import com.example.carsellingshop.Model.Car;
 import com.example.carsellingshop.R;
 import com.example.carsellingshop.Services.CarService;
 import com.google.android.material.navigation.NavigationView;
+
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
+
+
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         // Drawer views
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
+
 
         // Hamburger opens drawer
         toolbar.setNavigationOnClickListener(v ->
@@ -94,6 +101,47 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
 
                     finish();
+            }
+            drawerLayout.closeDrawers();
+            return true;
+        });
+
+
+
+        // Hamburger opens drawer
+        toolbar.setNavigationOnClickListener(v ->
+                drawerLayout.openDrawer(GravityCompat.START));
+
+        // Drawer item clicks
+        navigationView.setNavigationItemSelectedListener(item -> {
+            item.setChecked(true);
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
+                // TODO: show all cars (already default)
+            } else if (id == R.id.nav_favorites) {
+                Toast.makeText(this, "Favorites (coming soon)", Toast.LENGTH_SHORT).show();
+                // TODO: filter adapter to only favorite cars
+            } else if (id == R.id.nav_orders) {
+                Toast.makeText(this, "Orders (coming soon)", Toast.LENGTH_SHORT).show();
+                // TODO: open Orders screen
+            } else if (id == R.id.nav_logout) {
+                Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
+                // TODO: FirebaseAuth.getInstance().signOut();
+
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(MainActivity.this, LogInActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+
+                    finish();
+
+            }
+            drawerLayout.closeDrawers();
+            return true;
+        });
+
+
             }
             drawerLayout.closeDrawers();
             return true;
@@ -182,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
 
     @Override
     protected void onStart() {
