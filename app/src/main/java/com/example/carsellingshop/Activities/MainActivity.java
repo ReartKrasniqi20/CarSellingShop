@@ -3,11 +3,14 @@ package com.example.carsellingshop.Activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -26,6 +29,7 @@ import com.example.carsellingshop.Services.CarService;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -118,6 +122,28 @@ public class MainActivity extends AppCompatActivity {
         sv.setQueryHint("Search cars...");
         sv.setIconifiedByDefault(true);
         sv.setMaxWidth(Integer.MAX_VALUE);
+
+        MenuItem profileItem = menu.findItem(R.id.action_profile);
+        View avatarView = profileItem.getActionView();
+        TextView tv = avatarView.findViewById(R.id.tvAvatarInitialSmall);
+        View container = avatarView.findViewById(R.id.avatarContainerSmall);
+
+// compute initial
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String initialChar = "U";
+        if (user != null && user.getEmail() != null && !user.getEmail().isEmpty()) {
+            initialChar = user.getEmail().substring(0, 1).toUpperCase();
+        }
+        tv.setText(initialChar);
+
+// set background color
+        GradientDrawable bg = (GradientDrawable) container.getBackground().mutate();
+        bg.setColor(Color.parseColor("#3F51B5")); // or dynamic color
+
+// click opens profile
+        avatarView.setOnClickListener(v ->
+                startActivity(new Intent(this, ProfileActivity.class)));
+
 
         // White text/hint inside SearchView
         EditText et = sv.findViewById(androidx.appcompat.R.id.search_src_text);
