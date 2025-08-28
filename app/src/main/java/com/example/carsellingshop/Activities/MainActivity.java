@@ -62,24 +62,38 @@ public class MainActivity extends AppCompatActivity {
             item.setChecked(true);
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
-                // TODO: show all cars (already default)
+                Toast.makeText(this,"Home", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this,MainActivity.class);
+                startActivity(intent);
+                drawerLayout.closeDrawers();
+                return  true;
             } else if (id == R.id.nav_favorites) {
                 Toast.makeText(this, "Favorites (coming soon)", Toast.LENGTH_SHORT).show();
                 // TODO: filter adapter to only favorite cars
-            } else if (id == R.id.nav_orders) {
-                Toast.makeText(this, "Orders (coming soon)", Toast.LENGTH_SHORT).show();
-                // TODO: open Orders screen
-            } else if (id == R.id.nav_logout) {
+
+            }
+            else if(id==R.id.nav_profile){
+                Toast.makeText(this,"Your Profile", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                startActivity(intent);
+                drawerLayout.closeDrawers();
+                return  true;
+            }
+            else if (id == R.id.nav_aboutus) {
+                Toast.makeText(this, "About Us (coming soon)", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent);
+                drawerLayout.closeDrawers();
+                return true;
+            }
+            else if (id == R.id.nav_logout) {
                 Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
-                // TODO: FirebaseAuth.getInstance().signOut();
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(MainActivity.this, LogInActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
 
                     finish();
-
             }
             drawerLayout.closeDrawers();
             return true;
@@ -91,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         carRecyclerView.setHasFixedSize(true);
         carAdapter = new CarAdapter(new ArrayList<>());
         carRecyclerView.setAdapter(carAdapter);
-
         loadCars();
     }
 
