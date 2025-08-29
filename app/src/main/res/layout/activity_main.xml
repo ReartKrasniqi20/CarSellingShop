@@ -20,11 +20,15 @@
             android:backgroundTint="@color/grey"
             app:title="CAR IMPORT IDA"
             app:titleCentered="false"
+
+
             app:contentInsetStartWithNavigation="0dp"
             app:contentInsetStart="0dp"
             app:titleMarginStart="38dp"
             app:menu="@menu/top_app_bar"
             app:navigationIcon="@drawable/ic_menu_24" />
+
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/carRecyclerView"

@@ -2,7 +2,6 @@ package com.example.carsellingshop.Activities;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,7 +26,6 @@ import com.example.carsellingshop.Model.Car;
 import com.example.carsellingshop.R;
 import com.example.carsellingshop.Services.CarService;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -66,38 +64,33 @@ public class MainActivity extends AppCompatActivity {
             item.setChecked(true);
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                Toast.makeText(this,"Home", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this,MainActivity.class);
+                Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(intent);
                 drawerLayout.closeDrawers();
-                return  true;
+                return true;
             } else if (id == R.id.nav_favorites) {
                 Toast.makeText(this, "Favorites (coming soon)", Toast.LENGTH_SHORT).show();
                 // TODO: filter adapter to only favorite cars
-
-            }
-            else if(id==R.id.nav_profile){
-                Toast.makeText(this,"Your Profile", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+            } else if (id == R.id.nav_profile) {
+                Toast.makeText(this, "Your Profile", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
                 drawerLayout.closeDrawers();
-                return  true;
-            }
-            else if (id == R.id.nav_aboutus) {
+                return true;
+            } else if (id == R.id.nav_aboutus) {
                 Toast.makeText(this, "About Us (coming soon)", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, AboutActivity.class);
                 startActivity(intent);
                 drawerLayout.closeDrawers();
                 return true;
-            }
-            else if (id == R.id.nav_logout) {
+            } else if (id == R.id.nav_logout) {
                 Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(MainActivity.this, LogInActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-
-                    finish();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
             }
             drawerLayout.closeDrawers();
             return true;
@@ -123,12 +116,12 @@ public class MainActivity extends AppCompatActivity {
         sv.setIconifiedByDefault(true);
         sv.setMaxWidth(Integer.MAX_VALUE);
 
+        // ✅ Profile Avatar setup
         MenuItem profileItem = menu.findItem(R.id.action_profile);
         View avatarView = profileItem.getActionView();
         TextView tv = avatarView.findViewById(R.id.tvAvatarInitialSmall);
         View container = avatarView.findViewById(R.id.avatarContainerSmall);
 
-// compute initial
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String initialChar = "U";
         if (user != null && user.getEmail() != null && !user.getEmail().isEmpty()) {
@@ -136,14 +129,11 @@ public class MainActivity extends AppCompatActivity {
         }
         tv.setText(initialChar);
 
-// set background color
         GradientDrawable bg = (GradientDrawable) container.getBackground().mutate();
-        bg.setColor(Color.parseColor("#3F51B5")); // or dynamic color
+        bg.setColor(Color.parseColor("#3F51B5")); // dynamic color
 
-// click opens profile
         avatarView.setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class)));
-
 
         // White text/hint inside SearchView
         EditText et = sv.findViewById(androidx.appcompat.R.id.search_src_text);
@@ -151,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
             et.setTextColor(Color.WHITE);
             et.setHintTextColor(Color.parseColor("#B3FFFFFF"));
         }
+
         // White icons inside SearchView
         int white = Color.WHITE;
         ImageView mag   = sv.findViewById(androidx.appcompat.R.id.search_mag_icon);
@@ -219,5 +210,4 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
-
 }

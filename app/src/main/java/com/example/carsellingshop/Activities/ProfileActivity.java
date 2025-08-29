@@ -25,8 +25,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);   // make sure this is the cleaned XML with topToolbar + drawer
-
+        setContentView(R.layout.activity_profile);   // make sure XML is updated with topToolbar + drawer
 
         Toolbar toolbar = findViewById(R.id.topToolbar1); // id must match your XML
         setSupportActionBar(toolbar);
@@ -46,13 +45,12 @@ public class ProfileActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 startActivity(new Intent(this, MainActivity.class));
             } else if (id == R.id.nav_favorites) {
-                // placeholder for future favorites screen
-                // Toast.makeText(this, "Favorites (coming soon)", Toast.LENGTH_SHORT).show();
+                // placeholder for future favorites
             } else if (id == R.id.nav_profile) {
                 // already here
                 drawerLayout.closeDrawers();
                 return true;
-            } else if (id == R.id.nav_aboutus) { // ensure this id matches your drawer_menu.xml
+            } else if (id == R.id.nav_aboutus) {
                 startActivity(new Intent(this, AboutActivity.class));
             } else if (id == R.id.nav_logout) {
                 FirebaseAuth.getInstance().signOut();
@@ -89,7 +87,7 @@ public class ProfileActivity extends AppCompatActivity {
             String key = (u.getUid() != null) ? u.getUid() : display;
             int color = pickStableColor(key);
 
-            // tint the circular background
+            // tint avatar background
             GradientDrawable bg = (GradientDrawable) findViewById(R.id.avatarContainer)
                     .getBackground().mutate();
             bg.setColor(color);
@@ -99,7 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // auth guard: if signed out somehow, bounce to login
+        // auth guard: if signed out, bounce to login
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent intent = new Intent(this, LogInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
