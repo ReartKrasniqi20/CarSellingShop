@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/avatarContainerSmall"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:layout_marginStart="0dp"
+    android:background="@drawable/circle_solid"
+   >
+
+    <TextView
+        android:id="@+id/tvAvatarInitialSmall"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="U"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"/>
+</FrameLayout>
