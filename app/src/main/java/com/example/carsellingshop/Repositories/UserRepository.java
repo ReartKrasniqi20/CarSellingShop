@@ -1,58 +1,47 @@
 package com.example.carsellingshop.Repositories;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import com.example.carsellingshop.Database.DatabaseHelper;
-import com.example.carsellingshop.Model.User;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.*;
+
+import java.util.Map;
 
 public class UserRepository {
-    private DatabaseHelper dbHelper;
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final CollectionReference users =
+            FirebaseFirestore.getInstance().collection("users");
 
-    public UserRepository(Context context) {
-        dbHelper = new DatabaseHelper(context);
+    private String uidOrThrow() {
+        FirebaseUser u = auth.getCurrentUser();
+        if (u == null) throw new IllegalStateException("Not signed in");
+        return u.getUid();
     }
 
-    public long insertUser(User user) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("username", user.getUsername());
-        values.put("email", user.getEmail());
-        values.put("hashed_password", user.getHashedPassword());
-        values.put("user_type", user.getUserType());
-        long id = db.insert("users", null, values);
-        db.close();
-        return id;
+    /** Read the signed-in user’s profile document. */
+    public Task<DocumentSnapshot> getMyProfile() {
+        try { return users.document(uidOrThrow()).get(); }
+        catch (IllegalStateException e) { return Tasks.forException(e); }
     }
 
-    public User getUserByUsername(String username) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        User user = null;
-        Cursor cursor = db.query("users", new String[]{"id", "username", "email", "hashed_password", "user_type"},
-                "username=?", new String[]{username}, null, null, null);
-        if (cursor.moveToFirst()) {
-            user = new User(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), cursor.getString(4));
+    /** Create/merge fields into the signed-in user’s document. */
+    public Task<Void> upsertMyProfile(Map<String, Object> data) {
+        try {
+            String uid = uidOrThrow();
+            return users.document(uid).set(data, SetOptions.merge());
+        } catch (IllegalStateException e) {
+            return Tasks.forException(e);
         }
-        cursor.close();
-        db.close();
-        return user;
     }
 
-    public void updateUser(User user) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("email", user.getEmail());
-        values.put("hashed_password", user.getHashedPassword());
-        values.put("user_type", user.getUserType());
-        db.update("users", values, "id=?", new String[]{String.valueOf(user.getId())});
-        db.close();
-    }
-
-    public void deleteUser(int id) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete("users", "id=?", new String[]{String.valueOf(id)});
-        db.close();
+    /** Update specific fields (e.g., displayName, phone). */
+    public Task<Void> updateMyFields(Map<String, Object> updates) {
+        try {
+            String uid = uidOrThrow();
+            return users.document(uid).update(updates);
+        } catch (IllegalStateException e) {
+            return Tasks.forException(e);
+        }
     }
 }
