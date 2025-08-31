@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.constraintlayout)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("org.mindrot:jbcrypt:0.4")
+    implementation ("com.google.android.material:material:1.11.0")
 
     // Firebase
     implementation("com.google.firebase:firebase-auth:22.3.0")
