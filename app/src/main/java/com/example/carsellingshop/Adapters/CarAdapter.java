@@ -1,5 +1,6 @@
 package com.example.carsellingshop.Adapters;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,26 +20,56 @@ import com.example.carsellingshop.R;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> implements Filterable {
 
-    private final List<Car> visibleList; // what RecyclerView shows
-    private final List<Car> fullList;    // full data to filter
+    // Click to order/unorder
+    public interface OnOrderClickListener { void onOrderClick(Car car); }
+    private OnOrderClickListener orderClickListener;
+    public void setOnOrderClickListener(OnOrderClickListener l) { this.orderClickListener = l; }
+
+    // Track ordered cars
+    private final Set<String> orderedIds = new HashSet<>();
+    public void setOrderedCarIds(Set<String> ids) {
+        orderedIds.clear();
+        if (ids != null) orderedIds.addAll(ids);
+        notifyDataSetChanged();
+    }
+    public void markCarOrdered(String carId, boolean ordered) {
+        if (carId == null) return;
+        if (ordered) orderedIds.add(carId); else orderedIds.remove(carId);
+        // update only the affected row
+        for (int i = 0; i < visibleList.size(); i++) {
+            Car c = visibleList.get(i);
+            if (carId.equals(c.getId())) { notifyItemChanged(i); break; }
+        }
+    }
+
+    private final List<Car> visibleList; // displayed
+    private final List<Car> fullList;    // source for filter
 
     public CarAdapter(List<Car> initial) {
         this.visibleList = new ArrayList<>(initial);
         this.fullList = new ArrayList<>(initial);
+        setHasStableIds(true); // smoother updates if IDs are stable
     }
 
-    /** Call this after loading from Firestore */
+    /** Replace entire data set (e.g., after Firestore fetch) */
     public void replaceData(List<Car> newData) {
         fullList.clear();
         fullList.addAll(newData);
         visibleList.clear();
         visibleList.addAll(newData);
         notifyDataSetChanged();
+    }
+
+    @Override public long getItemId(int position) {
+        String id = visibleList.get(position).getId();
+        return id != null ? id.hashCode() : RecyclerView.NO_ID;
     }
 
     @NonNull @Override
@@ -59,14 +91,21 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
 
         Glide.with(holder.itemView.getContext())
                 .load(car.getImageUrl())
-                .fitCenter()
+                .centerCrop() // fill nicely
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .error(R.drawable.ic_launcher_foreground)
                 .into(holder.carImageView);
 
-        // Buttons (hook up later if needed)
-        holder.btnDetails.setOnClickListener(v -> {});
-        holder.btnOrder.setOnClickListener(v -> {});
+        boolean isOrdered = car.getId() != null && orderedIds.contains(car.getId());
+        styleOrderButton(holder.btnOrder, isOrdered);
+
+        holder.btnOrder.setOnClickListener(v -> {
+            if (orderClickListener != null) orderClickListener.onOrderClick(car);
+        });
+
+        holder.btnDetails.setOnClickListener(v -> {
+            // TODO: open details screen / bottom sheet
+        });
     }
 
     @Override public int getItemCount() { return visibleList.size(); }
@@ -85,6 +124,27 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
             tvDescription = itemView.findViewById(R.id.tvDescription);
             btnDetails = itemView.findViewById(R.id.btnDetails);
             btnOrder = itemView.findViewById(R.id.btnOrder);
+        }
+    }
+
+    private void styleOrderButton(Button b, boolean isOrdered) {
+        if (isOrdered) {
+            b.setText("ORDERED");
+            b.setEnabled(true); // keep clickable if you allow "cancel"
+            // If you use theme tint:
+            try {
+                b.setBackgroundTintList(ColorStateList.valueOf(
+                        ContextCompat.getColor(b.getContext(), android.R.color.darker_gray)));
+            } catch (Exception ignored) {}
+            // If you use custom drawable pills instead, prefer:
+            // b.setBackgroundResource(R.drawable.btn_gray_pill);
+        } else {
+            b.setText("ORDER");
+            b.setEnabled(true);
+            // Reset tint (if using theme tints)
+            try { b.setBackgroundTintList(null); } catch (Exception ignored) {}
+            // Or custom drawable:
+            // b.setBackgroundResource(R.drawable.btn_green_pill);
         }
     }
 

@@ -1,55 +1,96 @@
 package com.example.carsellingshop.Services;
 
+import android.text.TextUtils;
+
 import com.example.carsellingshop.Model.Order;
 import com.example.carsellingshop.Repositories.OrderRepository;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class OrderService {
-    private OrderRepository orderRepository;
+    private final OrderRepository repo;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    public OrderService(OrderRepository repo) {
+        this.repo = repo;
     }
 
-    public long placeOrder(Order order) {
-        if (order.getUserId() <= 0 || order.getCarId() <= 0 || order.getOrderDate() == null ||
-                order.getStatus() == null) {
-            throw new IllegalArgumentException("Valid user ID, car ID, date, and status are required");
-        }
-        return orderRepository.insertOrder(order);
+    /** Create a NEW order as PENDING. */
+    public Task<String> placeOrder(Order order) {
+        if (order == null) throw new IllegalArgumentException("Order is null");
+        if (TextUtils.isEmpty(order.getUserId())) throw new IllegalArgumentException("userId required");
+        if (TextUtils.isEmpty(order.getCarId())) throw new IllegalArgumentException("carId required");
+
+        // Force workflow state to pending on create
+        order.setStatus("pending");
+        // Let Firestore fill @ServerTimestamp
+        order.setCreatedAt(null);
+
+        return repo.addOrder(order);
     }
 
-    public List<Order> getOrdersByUserId(int userId) {
-        if (userId <= 0) {
-            throw new IllegalArgumentException("Invalid user ID");
-        }
-        return orderRepository.getOrdersByUserId(userId);
+    /** (Legacy) Get all orders by user (any status). */
+    public Task<QuerySnapshot> getOrdersByUser(String userId) {
+        if (TextUtils.isEmpty(userId)) throw new IllegalArgumentException("userId required");
+        return repo.getOrdersByUser(userId);
     }
 
-    public Order getOrderById(int id) {
-        Order order = orderRepository.getOrderById(id);
-        if (order == null) {
-            throw new IllegalArgumentException("Order not found");
-        }
-        return order;
+    /** Get ACTIVE orders (pending or confirmed) for UI state rebuild. */
+    public Task<QuerySnapshot> getActiveOrdersByUser(String userId) {
+        if (TextUtils.isEmpty(userId)) throw new IllegalArgumentException("userId required");
+        // Use Firestore directly to ensure status filter even if repo lacks it
+        return db.collection("orders")
+                .whereEqualTo("userId", userId)
+                .whereIn("status", Arrays.asList("pending", "confirmed"))
+                .get();
     }
 
-    public void updateOrder(Order order) {
-        if (order.getId() <= 0) {
-            throw new IllegalArgumentException("Invalid order ID");
+    /** Check if the user currently has an ACTIVE order for a car (pending/confirmed). */
+    public Task<QuerySnapshot> hasUserOrderedCar(String userId, String carId) {
+        if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(carId)) {
+            throw new IllegalArgumentException("userId & carId required");
         }
-        orderRepository.updateOrder(order);
+        return db.collection("orders")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("carId", carId)
+                .whereIn("status", Arrays.asList("pending", "confirmed"))
+                .get();
     }
 
-    public void cancelOrder(int id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException("Invalid order ID");
+    /** Cancel ONLY a pending order for this user+car (no-op if none). */
+    public Task<Void> cancelPendingOrder(String uid, String carId) {
+        if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(carId)) {
+            throw new IllegalArgumentException("uid & carId required");
         }
-        Order order = orderRepository.getOrderById(id);
-        if (order != null) {
-            order.setStatus("cancelled");
-            orderRepository.updateOrder(order);
-        }
+        return db.collection("orders")
+                .whereEqualTo("userId", uid)
+                .whereEqualTo("carId", carId)
+                .whereEqualTo("status", "pending")
+                .limit(1)
+                .get()
+                .onSuccessTask(qs -> {
+                    if (qs.isEmpty()) return Tasks.forResult(null);
+                    DocumentReference ref = qs.getDocuments().get(0).getReference();
+                    return ref.update("status", "cancelled",
+                            "cancelledAt", FieldValue.serverTimestamp());
+                });
+    }
+
+    /** Backward-compat: route old callers to pending-only cancel. */
+    public Task<Void> cancelActiveOrder(String uid, String carId) {
+        return cancelPendingOrder(uid, carId);
+    }
+
+    /** (Optional) Admin confirm an order by id. */
+    public Task<Void> confirmOrderById(String orderId) {
+        if (TextUtils.isEmpty(orderId)) throw new IllegalArgumentException("orderId required");
+        return db.collection("orders").document(orderId)
+                .update("status", "confirmed");
     }
 }
