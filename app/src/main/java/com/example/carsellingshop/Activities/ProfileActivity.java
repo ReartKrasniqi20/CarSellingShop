@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -16,18 +17,22 @@ import com.example.carsellingshop.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
+    private TextView tvName, tvEmail, tvAvatarInitial;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);   // make sure XML is updated with topToolbar + drawer
+        setContentView(R.layout.activity_profile);
 
-        Toolbar toolbar = findViewById(R.id.topToolbar1); // id must match your XML
+        Toolbar toolbar = findViewById(R.id.topToolbar1);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setTitle("Profile");
 
@@ -35,7 +40,6 @@ public class ProfileActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
 
-        // hamburger opens the drawer
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -45,9 +49,8 @@ public class ProfileActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 startActivity(new Intent(this, MainActivity.class));
             } else if (id == R.id.nav_favorites) {
-                // placeholder for future favorites
+                // placeholder
             } else if (id == R.id.nav_profile) {
-                // already here
                 drawerLayout.closeDrawers();
                 return true;
             } else if (id == R.id.nav_aboutus) {
@@ -66,28 +69,43 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         // ----- Profile UI -----
-        TextView tvName = findViewById(R.id.tvName);
-        TextView tvEmail = findViewById(R.id.tvEmail);
-        TextView tvAvatarInitial = findViewById(R.id.tvAvatarInitial);
+        tvName = findViewById(R.id.tvName);
+        tvEmail = findViewById(R.id.tvEmail);
+        tvAvatarInitial = findViewById(R.id.tvAvatarInitial);
 
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
         if (u != null) {
-            // name/email
-            String display = (u.getDisplayName() != null && !u.getDisplayName().isEmpty())
-                    ? u.getDisplayName()
-                    : (u.getEmail() != null ? u.getEmail() : "User");
-            tvName.setText(display);
             tvEmail.setText(u.getEmail() != null ? u.getEmail() : "—");
 
-            // initial letter
-            char initial = Character.toUpperCase(display.trim().isEmpty() ? 'U' : display.trim().charAt(0));
-            tvAvatarInitial.setText(String.valueOf(initial));
+            // load Firestore profile
+            FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(u.getUid())
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        if (snapshot.exists()) {
+                            String username = snapshot.getString("username");
+                            if (username != null && !username.isEmpty()) {
+                                tvName.setText(username);
 
-            // stable color from uid/email
-            String key = (u.getUid() != null) ? u.getUid() : display;
+                                char initial = Character.toUpperCase(username.charAt(0));
+                                tvAvatarInitial.setText(String.valueOf(initial));
+                            } else {
+                                tvName.setText("User");
+                                tvAvatarInitial.setText("U");
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("ProfileActivity", "Error loading user profile", e);
+                        tvName.setText("User");
+                        tvAvatarInitial.setText("U");
+                    });
+
+            // stable color for avatar background
+            String key = (u.getUid() != null) ? u.getUid() : "U";
             int color = pickStableColor(key);
 
-            // tint avatar background
             GradientDrawable bg = (GradientDrawable) findViewById(R.id.avatarContainer)
                     .getBackground().mutate();
             bg.setColor(color);
@@ -97,7 +115,6 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // auth guard: if signed out, bounce to login
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent intent = new Intent(this, LogInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -115,10 +132,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    // helper: generate a nice, stable color from a string
     private int pickStableColor(String s) {
         int hash = s.hashCode();
-        float hue = (hash & 0xFFFFFF) % 360;  // 0..359
+        float hue = (hash & 0xFFFFFF) % 360;
         float sat = 0.55f;
         float val = 0.85f;
         return Color.HSVToColor(new float[]{hue, sat, val});
