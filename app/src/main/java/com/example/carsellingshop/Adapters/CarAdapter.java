@@ -32,9 +32,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     private OnOrderClickListener orderClickListener;
     public void setOnOrderClickListener(OnOrderClickListener l) { this.orderClickListener = l; }
 
+
     public interface OnDetailsClickListener { void onDetailsClick(Car car); }
     private OnDetailsClickListener detailsClickListener;
     public void setOnDetailsClickListener(OnDetailsClickListener l) { this.detailsClickListener = l; }
+
 
     // Track ordered cars
     private final Set<String> orderedIds = new HashSet<>();
@@ -108,7 +110,9 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         });
 
         holder.btnDetails.setOnClickListener(v -> {
+
                 if (detailsClickListener != null) detailsClickListener.onDetailsClick(car);
+
         });
     }
 
