@@ -32,6 +32,12 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     private OnOrderClickListener orderClickListener;
     public void setOnOrderClickListener(OnOrderClickListener l) { this.orderClickListener = l; }
 
+
+    public interface OnDetailsClickListener { void onDetailsClick(Car car); }
+    private OnDetailsClickListener detailsClickListener;
+    public void setOnDetailsClickListener(OnDetailsClickListener l) { this.detailsClickListener = l; }
+
+
     // Track ordered cars
     private final Set<String> orderedIds = new HashSet<>();
     public void setOrderedCarIds(Set<String> ids) {
@@ -87,7 +93,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         holder.carPriceTag.setText(priceText);
         int disc = (int) car.getDiscount();
         holder.tvDiscount.setText(disc > 0 ? "Discount - " + disc + "%" : "");
-        holder.tvDescription.setText(car.getDescription() == null ? "" : car.getDescription());
+
 
         Glide.with(holder.itemView.getContext())
                 .load(car.getImageUrl())
@@ -104,7 +110,9 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         });
 
         holder.btnDetails.setOnClickListener(v -> {
-            // TODO: open details screen / bottom sheet
+
+                if (detailsClickListener != null) detailsClickListener.onDetailsClick(car);
+
         });
     }
 

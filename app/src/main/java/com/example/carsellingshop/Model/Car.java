@@ -8,17 +8,25 @@ public class Car {
     private String imageUrl;
     private String description;
     private int discount;
+    private int year;
+    private String mileageKm;
+    private String fuelType;
+    private String transmission;
 
     // Required empty constructor for Firestore
     public Car() { }
 
-    public Car(String id, String model, double price, String imageUrl, String description, int discount) {
+    public Car(String id, String model, double price, String imageUrl, String description, int discount, int year, String mileageKm, String fuelType, String transmission) {
         this.id = id;
         this.model = model;
         this.price = price;
         this.imageUrl = imageUrl;
         this.description = description;
         this.discount = discount;
+        this.fuelType=fuelType;
+        this.mileageKm=mileageKm;
+        this.transmission=transmission;
+        this.year=year;
     }
 
     // Getters & Setters
@@ -39,4 +47,16 @@ public class Car {
 
     public double getDiscount() { return discount; }
     public void setDiscount(int discount) { this.discount = discount; }
+
+    public Integer getYear() { return year; }
+    public void setYear(Integer year) { this.year = year; }
+
+    public String getMileageKm() { return mileageKm; }
+    public void setMileageKm(String mileageKm) { this.mileageKm = mileageKm; }
+
+    public String getFuelType() { return fuelType; }
+    public void setFuelType(String fuelType) { this.fuelType = fuelType; }
+
+    public String getTransmission() { return transmission; }
+    public void setTransmission(String transmission) { this.transmission = transmission; }
 }

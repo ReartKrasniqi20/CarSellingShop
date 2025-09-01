@@ -55,14 +55,7 @@
             android:textStyle="bold" />
 
         <!-- Car Description -->
-        <TextView
-            android:id="@+id/tvDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:text="Such an impressive car..."
-            android:textColor="@android:color/darker_gray"
-            android:textSize="12sp" />
+
 
         <!-- Buttons -->
         <LinearLayout
