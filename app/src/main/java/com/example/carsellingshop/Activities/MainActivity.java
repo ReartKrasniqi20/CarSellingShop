@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                         .show();
             }
         });
+
         carAdapter.setOnDetailsClickListener(car -> {
             String specs = buildSpecs(car);
             CarDetailsBottomSheet sheet = CarDetailsBottomSheet.newInstance(
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
             );
             sheet.show(getSupportFragmentManager(), "carDetails");
         });
+
 
         carRecyclerView.setAdapter(carAdapter);
 
