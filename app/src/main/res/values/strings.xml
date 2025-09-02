@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Car Selling Shop</string>
+    <string-array name="order_status_array">
+        <item>pending</item>
+        <item>confirmed</item>
+        <item>cancelled</item>
+    </string-array>
+
 </resources>

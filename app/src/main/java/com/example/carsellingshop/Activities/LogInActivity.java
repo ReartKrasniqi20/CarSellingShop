@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.carsellingshop.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -29,16 +30,19 @@ public class LogInActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
         signUpButton = findViewById(R.id.signUpButton);
+        forgotPasswordButton = findViewById(R.id.forgotPasswordButton);
 
         mAuth = FirebaseAuth.getInstance();
 
+        // 🔹 Login button
         loginButton.setOnClickListener(v -> loginUser());
+
+        // 🔹 Go to SignUp
         signUpButton.setOnClickListener(v -> {
             startActivity(new Intent(LogInActivity.this, SignUpActivity.class));
         });
 
-        forgotPasswordButton = findViewById(R.id.forgotPasswordButton);
-
+        // 🔹 Forgot password
         forgotPasswordButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
 
@@ -56,7 +60,6 @@ public class LogInActivity extends AppCompatActivity {
                         }
                     });
         });
-
     }
 
     private void loginUser() {
@@ -73,9 +76,33 @@ public class LogInActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null && user.isEmailVerified()) {
-                            Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LogInActivity.this, MainActivity.class));
-                            finish();
+                            String uid = user.getUid();
+
+                            // 🔹 Fetch role from Firestore
+                            FirebaseFirestore.getInstance()
+                                    .collection("users")
+                                    .document(uid)
+                                    .get()
+                                    .addOnSuccessListener(doc -> {
+                                        if (doc.exists()) {
+                                            String role = doc.getString("userType");
+
+                                            if ("admin".equals(role)) {
+                                                Toast.makeText(this, "Welcome Admin!", Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(LogInActivity.this, AdminActivity.class));
+                                            } else {
+                                                Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(LogInActivity.this, MainActivity.class));
+                                            }
+                                            finish();
+                                        } else {
+                                            Toast.makeText(this, "No user record found in Firestore", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(this, "Error fetching role: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                    );
+
                         } else {
                             Toast.makeText(this, "Please verify your email first", Toast.LENGTH_LONG).show();
                         }
