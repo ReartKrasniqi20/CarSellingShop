@@ -41,6 +41,7 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
     private OnOrderPlacedListener listener;
     private OrderService orderService;
 
+
     public void setOnOrderPlacedListener(OnOrderPlacedListener l) {
         this.listener = l;
     }
@@ -57,10 +58,12 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
         return sheet;
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         orderService = new OrderService(new OrderRepository());
+
     }
 
     @Nullable
@@ -127,6 +130,7 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
                 return;
             }
 
+
             btnSubmit.setEnabled(false);
 
             Order order = new Order();
@@ -139,6 +143,7 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
             order.setName(name);
             order.setPhone(phone);
             order.setAddress(address);
+
             order.setStatus("pending");
 
             orderService.placeOrder(order)
@@ -146,7 +151,6 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
                         order.setId(orderId); //  Save generated Firestore ID back
                         Toast.makeText(requireContext(), "Order placed!", Toast.LENGTH_SHORT).show();
                         if (listener != null) listener.onOrderPlaced(carId);
-
                         dismiss();
                     })
                     .addOnFailureListener(e -> {

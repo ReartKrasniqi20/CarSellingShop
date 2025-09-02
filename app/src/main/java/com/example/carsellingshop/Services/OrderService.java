@@ -16,6 +16,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Arrays;
 import java.util.Locale;
 
+
 public class OrderService {
     private final OrderRepository repo;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -32,7 +33,7 @@ public class OrderService {
 
         // Force workflow state to pending on create
         order.setStatus("pending");
-        // Let Firestore set createdAt via @ServerTimestamp
+
         order.setCreatedAt(null);
 
         return repo.addOrder(order);
@@ -62,6 +63,7 @@ public class OrderService {
     }
 
     /** Check if user has an ACTIVE order for a car. */
+
     public Task<QuerySnapshot> hasUserOrderedCar(String userId, String carId) {
         if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(carId)) {
             throw new IllegalArgumentException("userId & carId required");
@@ -116,6 +118,31 @@ public class OrderService {
             case "pending":
             default:
                 return "pending";
+
         }
+        return db.collection("orders")
+                .whereEqualTo("userId", uid)
+                .whereEqualTo("carId", carId)
+                .whereEqualTo("status", "pending")
+                .limit(1)
+                .get()
+                .onSuccessTask(qs -> {
+                    if (qs.isEmpty()) return Tasks.forResult(null);
+                    DocumentReference ref = qs.getDocuments().get(0).getReference();
+                    return ref.update("status", "cancelled",
+                            "cancelledAt", FieldValue.serverTimestamp());
+                });
+    }
+
+    /** Backward-compat: route old callers to pending-only cancel. */
+    public Task<Void> cancelActiveOrder(String uid, String carId) {
+        return cancelPendingOrder(uid, carId);
+    }
+
+    /** (Optional) Admin confirm an order by id. */
+    public Task<Void> confirmOrderById(String orderId) {
+        if (TextUtils.isEmpty(orderId)) throw new IllegalArgumentException("orderId required");
+        return db.collection("orders").document(orderId)
+                .update("status", "confirmed");
     }
 }

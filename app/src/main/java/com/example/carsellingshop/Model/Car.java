@@ -22,6 +22,7 @@ public class Car {
 
     public Car(String id, String model, double price, String imageUrl, String description,
                int discount, int year, String mileageKm, String fuelType, String transmission) {
+
         this.id = id;
         this.model = model;
         this.price = price;
@@ -57,6 +58,7 @@ public class Car {
     public int getYear() { return year; }
     public void setYear(int year) { this.year = year; }
 
+
     public String getMileageKm() { return mileageKm; }
     public void setMileageKm(String mileageKm) { this.mileageKm = mileageKm; }
 
@@ -66,3 +68,4 @@ public class Car {
     public String getTransmission() { return transmission; }
     public void setTransmission(String transmission) { this.transmission = transmission; }
 }
+

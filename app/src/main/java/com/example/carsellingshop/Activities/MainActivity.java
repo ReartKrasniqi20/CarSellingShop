@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private final Map<String, String> orderStatusMap = new HashMap<>();
     private final OrderService orderService = new OrderService(new OrderRepository());
     private ListenerRegistration ordersListener; // detach later
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,11 +87,13 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_aboutus) {
                     startActivity(new Intent(this, AboutActivity.class));
                 } else if (id == R.id.nav_logout) {
+
                     // stop real-time listener before signing out
                     if (ordersListener != null) {
                         ordersListener.remove();
                         ordersListener = null;
                     }
+
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(this, LogInActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -198,8 +202,10 @@ public class MainActivity extends AppCompatActivity {
             }
             carAdapter.setOrderStatusMap(orderStatusMap);
         });
+
     }
 
+    // Toolbar menu (Search + Profile avatar actionView)
     @Override
     protected void onStop() {
         super.onStop();
@@ -226,7 +232,9 @@ public class MainActivity extends AppCompatActivity {
             EditText et = sv.findViewById(androidx.appcompat.R.id.search_src_text);
             if (et != null) {
                 et.setTextColor(Color.WHITE);
+
                 et.setHintTextColor(0xB3FFFFFF);
+
             }
             ImageView mag   = sv.findViewById(androidx.appcompat.R.id.search_mag_icon);
             ImageView close = sv.findViewById(androidx.appcompat.R.id.search_close_btn);
@@ -269,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem profileItem = menu.findItem(R.id.action_profile);
         if (profileItem != null) {
             View avatarView = profileItem.getActionView();
+
             if (avatarView != null) {
                 TextView tv = avatarView.findViewById(R.id.tvAvatarInitialSmall);
                 View container = avatarView.findViewById(R.id.avatarContainerSmall);
@@ -293,7 +302,9 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
     // Fallback if no custom actionView
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_profile) {
@@ -329,5 +340,16 @@ public class MainActivity extends AppCompatActivity {
         if (c.getFuelType() != null) lines.add("Fuel: " + c.getFuelType());
         if (c.getTransmission() != null) lines.add("Transmission: " + c.getTransmission());
         return android.text.TextUtils.join("\n", lines);
+
     }
+
+    private String buildSpecs(Car c) {
+        java.util.List<String> lines = new java.util.ArrayList<>();
+        if (c.getYear() != null)        lines.add("Year: " + c.getYear());
+        if (c.getMileageKm() != null)   lines.add("Kilometers: " + c.getMileageKm());
+        if (c.getFuelType() != null)    lines.add("Fuel: " + c.getFuelType());
+        if (c.getTransmission() != null)lines.add("Transmission: " + c.getTransmission());
+        return android.text.TextUtils.join("\n", lines);
+    }
+
 }

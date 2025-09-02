@@ -36,6 +36,7 @@
         <activity android:name=".Activities.AdminActivity" />
         <activity android:name=".Activities.AddCarActivity" />
 
+
     </application>
 
 </manifest>

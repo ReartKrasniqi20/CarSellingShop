@@ -20,6 +20,7 @@ import com.example.carsellingshop.R;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -27,10 +28,11 @@ import java.util.Map;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> implements Filterable {
 
-    // ---- Listeners ----
+   
     public interface OnOrderClickListener { void onOrderClick(Car car); }
     private OnOrderClickListener orderClickListener;
     public void setOnOrderClickListener(OnOrderClickListener l) { this.orderClickListener = l; }
+
 
     public interface OnDetailsClickListener { void onDetailsClick(Car car); }
     private OnDetailsClickListener detailsClickListener;
@@ -56,6 +58,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     }
 
     // ---- Manage Data ----
+
     public void replaceData(List<Car> newData) {
         fullList.clear();
         fullList.addAll(newData);
@@ -63,6 +66,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         visibleList.addAll(newData);
         notifyDataSetChanged();
     }
+
 
     /** Replace the entire status map (user mode). */
     public void setOrderStatusMap(Map<String, String> map) {
@@ -85,6 +89,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     // ---- Adapter methods ----
     @NonNull
     @Override
+
     public CarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_car, parent, false);
@@ -133,6 +138,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
                 if (detailsClickListener != null) detailsClickListener.onDetailsClick(car);
             });
         }
+
     }
 
     @Override
@@ -163,10 +169,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         }
     }
 
-    // ---- Style for user order button ----
-    // null      -> "ORDER" (enabled)
-    // "pending" -> "PENDING" (enabled, gray)
-    // "confirmed" -> "APPROVED" (disabled, green)
     private void styleOrderButton(Button b, String status) {
         if (status == null) {
             b.setEnabled(true);
@@ -198,7 +200,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         try { b.setBackgroundTintList(null); } catch (Exception ignored) {}
     }
 
-    // ---- Search filter ----
+
     @Override
     public Filter getFilter() {
         return new Filter() {
