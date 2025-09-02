@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/etModel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Car Model"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/etDiscount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Discount (%)"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Year"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etMileage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Mileage (e.g. 50,000 km)"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etFuelType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fuel Type"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etTransmission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Transmission (e.g. Automatic)"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:inputType="textMultiLine" />
+
+        <EditText
+            android:id="@+id/etImageUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Image URL"
+            android:inputType="textUri" />
+
+        <Button
+            android:id="@+id/btnSaveCar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Car"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</ScrollView>

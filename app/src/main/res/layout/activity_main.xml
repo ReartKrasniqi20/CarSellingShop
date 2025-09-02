@@ -19,7 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:backgroundTint="@color/grey"
             app:title="CAR IMPORT IDA"
-            app:titleCentered="false"
+            app:titleCentered="true"
 
 
             app:contentInsetStartWithNavigation="0dp"

@@ -7,11 +7,14 @@ import com.example.carsellingshop.Repositories.OrderRepository;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public class OrderService {
     private final OrderRepository repo;
@@ -29,29 +32,36 @@ public class OrderService {
 
         // Force workflow state to pending on create
         order.setStatus("pending");
-        // Let Firestore fill @ServerTimestamp
+        // Let Firestore set createdAt via @ServerTimestamp
         order.setCreatedAt(null);
 
         return repo.addOrder(order);
     }
 
-    /** (Legacy) Get all orders by user (any status). */
-    public Task<QuerySnapshot> getOrdersByUser(String userId) {
+    /** Real-time: ACTIVE (pending or confirmed/approved) orders for user. */
+    public ListenerRegistration listenToActiveOrdersByUser(
+            String userId,
+            EventListener<QuerySnapshot> listener
+    ) {
         if (TextUtils.isEmpty(userId)) throw new IllegalArgumentException("userId required");
-        return repo.getOrdersByUser(userId);
-    }
 
-    /** Get ACTIVE orders (pending or confirmed) for UI state rebuild. */
-    public Task<QuerySnapshot> getActiveOrdersByUser(String userId) {
-        if (TextUtils.isEmpty(userId)) throw new IllegalArgumentException("userId required");
-        // Use Firestore directly to ensure status filter even if repo lacks it
+        // Tolerate both "confirmed" and "approved" just in case the admin UI once wrote "approved"
         return db.collection("orders")
                 .whereEqualTo("userId", userId)
-                .whereIn("status", Arrays.asList("pending", "confirmed"))
+                .whereIn("status", Arrays.asList("pending", "confirmed", "approved"))
+                .addSnapshotListener(listener);
+    }
+
+    /** One-shot: ACTIVE orders for user. */
+    public Task<QuerySnapshot> getActiveOrdersByUser(String userId) {
+        if (TextUtils.isEmpty(userId)) throw new IllegalArgumentException("userId required");
+        return db.collection("orders")
+                .whereEqualTo("userId", userId)
+                .whereIn("status", Arrays.asList("pending", "confirmed", "approved"))
                 .get();
     }
 
-    /** Check if the user currently has an ACTIVE order for a car (pending/confirmed). */
+    /** Check if user has an ACTIVE order for a car. */
     public Task<QuerySnapshot> hasUserOrderedCar(String userId, String carId) {
         if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(carId)) {
             throw new IllegalArgumentException("userId & carId required");
@@ -59,11 +69,11 @@ public class OrderService {
         return db.collection("orders")
                 .whereEqualTo("userId", userId)
                 .whereEqualTo("carId", carId)
-                .whereIn("status", Arrays.asList("pending", "confirmed"))
+                .whereIn("status", Arrays.asList("pending", "confirmed", "approved"))
                 .get();
     }
 
-    /** Cancel ONLY a pending order for this user+car (no-op if none). */
+    /** Cancel ONLY a pending order for this user+car. */
     public Task<Void> cancelPendingOrder(String uid, String carId) {
         if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(carId)) {
             throw new IllegalArgumentException("uid & carId required");
@@ -82,15 +92,30 @@ public class OrderService {
                 });
     }
 
-    /** Backward-compat: route old callers to pending-only cancel. */
-    public Task<Void> cancelActiveOrder(String uid, String carId) {
-        return cancelPendingOrder(uid, carId);
-    }
-
-    /** (Optional) Admin confirm an order by id. */
+    /** Admin confirm an order by id — always store canonical "confirmed". */
     public Task<Void> confirmOrderById(String orderId) {
         if (TextUtils.isEmpty(orderId)) throw new IllegalArgumentException("orderId required");
         return db.collection("orders").document(orderId)
                 .update("status", "confirmed");
+    }
+
+    /** Utility to normalize any admin-provided status string to canonical value. */
+    public static String normalizeStatus(String statusRaw) {
+        if (statusRaw == null) return "pending";
+        String s = statusRaw.trim().toLowerCase(Locale.US);
+        switch (s) {
+            case "approved":
+            case "approve":
+            case "confirm":
+            case "confirmed":
+                return "confirmed";
+            case "cancel":
+            case "canceled":
+            case "cancelled":
+                return "cancelled";
+            case "pending":
+            default:
+                return "pending";
+        }
     }
 }

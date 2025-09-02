@@ -1,8 +1,12 @@
 package com.example.carsellingshop.Model;
 
+import com.google.firebase.firestore.Exclude;
+
 public class Car {
 
+    @Exclude
     private String id;
+
     private String model;
     private double price;
     private String imageUrl;
@@ -16,20 +20,22 @@ public class Car {
     // Required empty constructor for Firestore
     public Car() { }
 
-    public Car(String id, String model, double price, String imageUrl, String description, int discount, int year, String mileageKm, String fuelType, String transmission) {
+    public Car(String id, String model, double price, String imageUrl, String description,
+               int discount, int year, String mileageKm, String fuelType, String transmission) {
         this.id = id;
         this.model = model;
         this.price = price;
         this.imageUrl = imageUrl;
         this.description = description;
         this.discount = discount;
-        this.fuelType=fuelType;
-        this.mileageKm=mileageKm;
-        this.transmission=transmission;
-        this.year=year;
+        this.fuelType = fuelType;
+        this.mileageKm = mileageKm;
+        this.transmission = transmission;
+        this.year = year;
     }
 
-    // Getters & Setters
+    // ✅ Getters & Setters
+    @Exclude
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -45,11 +51,11 @@ public class Car {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public double getDiscount() { return discount; }
+    public int getDiscount() { return discount; }
     public void setDiscount(int discount) { this.discount = discount; }
 
-    public Integer getYear() { return year; }
-    public void setYear(Integer year) { this.year = year; }
+    public int getYear() { return year; }
+    public void setYear(int year) { this.year = year; }
 
     public String getMileageKm() { return mileageKm; }
     public void setMileageKm(String mileageKm) { this.mileageKm = mileageKm; }

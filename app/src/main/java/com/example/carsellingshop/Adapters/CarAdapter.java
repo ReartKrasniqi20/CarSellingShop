@@ -20,14 +20,14 @@ import com.example.carsellingshop.R;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+import java.util.Map;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> implements Filterable {
 
-    // Click to order/unorder
+    // ---- Listeners ----
     public interface OnOrderClickListener { void onOrderClick(Car car); }
     private OnOrderClickListener orderClickListener;
     public void setOnOrderClickListener(OnOrderClickListener l) { this.orderClickListener = l; }
@@ -36,33 +36,26 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     private OnDetailsClickListener detailsClickListener;
     public void setOnDetailsClickListener(OnDetailsClickListener l) { this.detailsClickListener = l; }
 
-    // Track ordered cars
-    private final Set<String> orderedIds = new HashSet<>();
-    public void setOrderedCarIds(Set<String> ids) {
-        orderedIds.clear();
-        if (ids != null) orderedIds.addAll(ids);
-        notifyDataSetChanged();
-    }
-    public void markCarOrdered(String carId, boolean ordered) {
-        if (carId == null) return;
-        if (ordered) orderedIds.add(carId); else orderedIds.remove(carId);
-        // update only the affected row
-        for (int i = 0; i < visibleList.size(); i++) {
-            Car c = visibleList.get(i);
-            if (carId.equals(c.getId())) { notifyItemChanged(i); break; }
-        }
-    }
+    public interface OnDeleteClickListener { void onDeleteClick(Car car); }
+    private OnDeleteClickListener deleteClickListener;
+    public void setOnDeleteClickListener(OnDeleteClickListener l) { this.deleteClickListener = l; }
 
-    private final List<Car> visibleList; // displayed
-    private final List<Car> fullList;    // source for filter
+    // ---- Fields ----
+    private final boolean isAdmin;  // admin/user mode
+    // carId -> null|"pending"|"confirmed"
+    private final Map<String, String> orderStatusByCarId = new HashMap<>();
+    private final List<Car> visibleList;
+    private final List<Car> fullList;
 
-    public CarAdapter(List<Car> initial) {
+    // ---- Constructor ----
+    public CarAdapter(List<Car> initial, boolean isAdmin) {
         this.visibleList = new ArrayList<>(initial);
         this.fullList = new ArrayList<>(initial);
-        setHasStableIds(true); // smoother updates if IDs are stable
+        this.isAdmin = isAdmin;
+        setHasStableIds(true);
     }
 
-    /** Replace entire data set (e.g., after Firestore fetch) */
+    // ---- Manage Data ----
     public void replaceData(List<Car> newData) {
         fullList.clear();
         fullList.addAll(newData);
@@ -71,14 +64,30 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         notifyDataSetChanged();
     }
 
-    @Override public long getItemId(int position) {
-        String id = visibleList.get(position).getId();
-        return id != null ? id.hashCode() : RecyclerView.NO_ID;
+    /** Replace the entire status map (user mode). */
+    public void setOrderStatusMap(Map<String, String> map) {
+        orderStatusByCarId.clear();
+        if (map != null) orderStatusByCarId.putAll(map);
+        notifyDataSetChanged();
     }
 
-    @NonNull @Override
+    /** Update one car’s status (user mode). */
+    public void setOrderStatusForCar(String carId, String statusOrNull) {
+        if (carId == null) return;
+        if (statusOrNull == null) orderStatusByCarId.remove(carId);
+        else orderStatusByCarId.put(carId, statusOrNull);
+        for (int i = 0; i < visibleList.size(); i++) {
+            Car c = visibleList.get(i);
+            if (carId.equals(c.getId())) { notifyItemChanged(i); break; }
+        }
+    }
+
+    // ---- Adapter methods ----
+    @NonNull
+    @Override
     public CarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_car, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_car, parent, false);
         return new CarViewHolder(view);
     }
 
@@ -92,32 +101,54 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         int disc = (int) car.getDiscount();
         holder.tvDiscount.setText(disc > 0 ? "Discount - " + disc + "%" : "");
 
-
         Glide.with(holder.itemView.getContext())
                 .load(car.getImageUrl())
-                .centerCrop() // fill nicely
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_foreground)
+                .centerCrop()
+                .placeholder(R.drawable.ic_car_placeholder)
+                .error(R.drawable.ic_car_placeholder)
                 .into(holder.carImageView);
 
-        boolean isOrdered = car.getId() != null && orderedIds.contains(car.getId());
-        styleOrderButton(holder.btnOrder, isOrdered);
+        if (isAdmin) {
+            // ---- ADMIN MODE ----
+            holder.btnOrder.setVisibility(View.GONE);
+            holder.btnDetails.setVisibility(View.GONE);
 
-        holder.btnOrder.setOnClickListener(v -> {
-            if (orderClickListener != null) orderClickListener.onOrderClick(car);
-        });
+            holder.btnAdminDelete.setVisibility(View.VISIBLE);
+            holder.btnAdminDelete.setOnClickListener(v -> {
+                if (deleteClickListener != null) deleteClickListener.onDeleteClick(car);
+            });
 
-        holder.btnDetails.setOnClickListener(v -> {
+        } else {
+            // ---- USER MODE ----
+            holder.btnAdminDelete.setVisibility(View.GONE);
+
+            String status = orderStatusByCarId.get(car.getId()); // null | "pending" | "confirmed"
+            styleOrderButton(holder.btnOrder, status);
+
+            holder.btnOrder.setOnClickListener(v -> {
+                if (orderClickListener != null) orderClickListener.onOrderClick(car);
+            });
+
+            holder.btnDetails.setOnClickListener(v -> {
                 if (detailsClickListener != null) detailsClickListener.onDetailsClick(car);
-        });
+            });
+        }
     }
 
-    @Override public int getItemCount() { return visibleList.size(); }
+    @Override
+    public int getItemCount() { return visibleList.size(); }
 
+    @Override
+    public long getItemId(int position) {
+        String id = visibleList.get(position).getId();
+        return id != null ? id.hashCode() : RecyclerView.NO_ID;
+    }
+
+    // ---- ViewHolder ----
     public static class CarViewHolder extends RecyclerView.ViewHolder {
         ImageView carImageView;
         TextView carModelTextView, carPriceTag, tvDiscount, tvDescription;
-        Button btnDetails, btnOrder;
+        Button btnDetails, btnOrder, btnAdminDelete;
 
         public CarViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -128,31 +159,46 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
             tvDescription = itemView.findViewById(R.id.tvDescription);
             btnDetails = itemView.findViewById(R.id.btnDetails);
             btnOrder = itemView.findViewById(R.id.btnOrder);
+            btnAdminDelete = itemView.findViewById(R.id.btnAdminDelete);
         }
     }
 
-    private void styleOrderButton(Button b, boolean isOrdered) {
-        if (isOrdered) {
-            b.setText("ORDERED");
-            b.setEnabled(true); // keep clickable if you allow "cancel"
-            // If you use theme tint:
+    // ---- Style for user order button ----
+    // null      -> "ORDER" (enabled)
+    // "pending" -> "PENDING" (enabled, gray)
+    // "confirmed" -> "APPROVED" (disabled, green)
+    private void styleOrderButton(Button b, String status) {
+        if (status == null) {
+            b.setEnabled(true);
+            b.setText("ORDER");
+            try { b.setBackgroundTintList(null); } catch (Exception ignored) {}
+            return;
+        }
+        if ("pending".equals(status)) {
+            b.setEnabled(true);
+            b.setText("PENDING");
             try {
                 b.setBackgroundTintList(ColorStateList.valueOf(
                         ContextCompat.getColor(b.getContext(), android.R.color.darker_gray)));
             } catch (Exception ignored) {}
-            // If you use custom drawable pills instead, prefer:
-            // b.setBackgroundResource(R.drawable.btn_gray_pill);
-        } else {
-            b.setText("ORDER");
-            b.setEnabled(true);
-            // Reset tint (if using theme tints)
-            try { b.setBackgroundTintList(null); } catch (Exception ignored) {}
-            // Or custom drawable:
-            // b.setBackgroundResource(R.drawable.btn_green_pill);
+            return;
         }
+        if ("confirmed".equals(status)) {
+            b.setEnabled(false);
+            b.setText("CONFIRMED");
+            try {
+                b.setBackgroundTintList(ColorStateList.valueOf(
+                        ContextCompat.getColor(b.getContext(), android.R.color.holo_green_dark)));
+            } catch (Exception ignored) {}
+            return;
+        }
+        // fallback
+        b.setEnabled(true);
+        b.setText("ORDER");
+        try { b.setBackgroundTintList(null); } catch (Exception ignored) {}
     }
 
-    // ----- Search filter -----
+    // ---- Search filter ----
     @Override
     public Filter getFilter() {
         return new Filter() {

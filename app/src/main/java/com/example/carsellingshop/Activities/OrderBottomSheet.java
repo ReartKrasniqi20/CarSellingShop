@@ -39,6 +39,7 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
     }
 
     private OnOrderPlacedListener listener;
+    private OrderService orderService;
 
     public void setOnOrderPlacedListener(OnOrderPlacedListener l) {
         this.listener = l;
@@ -56,14 +57,10 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
         return sheet;
     }
 
-    private OrderService orderService;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         orderService = new OrderService(new OrderRepository());
-        // If you prefer a specific bottom sheet theme and your app theme doesn’t set it:
-        // setStyle(STYLE_NORMAL, com.google.android.material.R.style.ThemeOverlay_Material3_BottomSheetDialog);
     }
 
     @Nullable
@@ -130,7 +127,6 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
                 return;
             }
 
-            // Prevent double-taps during network call
             btnSubmit.setEnabled(false);
 
             Order order = new Order();
@@ -143,26 +139,13 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
             order.setName(name);
             order.setPhone(phone);
             order.setAddress(address);
-            // either omit (null) or set explicitly; OrderService.placeOrder will enforce "pending"
             order.setStatus("pending");
 
             orderService.placeOrder(order)
                     .addOnSuccessListener(orderId -> {
+                        order.setId(orderId); //  Save generated Firestore ID back
                         Toast.makeText(requireContext(), "Order placed!", Toast.LENGTH_SHORT).show();
                         if (listener != null) listener.onOrderPlaced(carId);
-
-                        // Open user's mail app with a prefilled draft (free)
-                        String subject = "Order received: " + (carModel != null ? carModel : "Your car");
-                        String body = "Thanks for your order!\n\nOrder ID: " + orderId +
-                                "\nCar: " + (carModel != null ? carModel : "") +
-                                "\n\nWe’ll follow up shortly.";
-                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                        emailIntent.setData(Uri.parse("mailto:" + (email != null ? email : "")));
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                        emailIntent.putExtra(Intent.EXTRA_TEXT, body);
-                        if (emailIntent.resolveActivity(requireContext().getPackageManager()) != null) {
-                            startActivity(emailIntent);
-                        }
 
                         dismiss();
                     })

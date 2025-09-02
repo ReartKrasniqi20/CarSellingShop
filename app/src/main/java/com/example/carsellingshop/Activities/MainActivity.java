@@ -31,12 +31,13 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,8 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private CarAdapter carAdapter;
     private final CarService carService = new CarService();
 
-    private final Set<String> orderedCarIds = new HashSet<>();
+    // carId -> "pending" | "confirmed"
+    private final Map<String, String> orderStatusMap = new HashMap<>();
     private final OrderService orderService = new OrderService(new OrderRepository());
+    private ListenerRegistration ordersListener; // detach later
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_aboutus) {
                     startActivity(new Intent(this, AboutActivity.class));
                 } else if (id == R.id.nav_logout) {
+                    // stop real-time listener before signing out
+                    if (ordersListener != null) {
+                        ordersListener.remove();
+                        ordersListener = null;
+                    }
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(this, LogInActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -99,11 +107,16 @@ public class MainActivity extends AppCompatActivity {
         carRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         carRecyclerView.setHasFixedSize(true);
 
-        carAdapter = new CarAdapter(new ArrayList<>());
+        carAdapter = new CarAdapter(new ArrayList<>(), false);
+        carRecyclerView.setAdapter(carAdapter);
+
+        // Order button logic
         carAdapter.setOnOrderClickListener(car -> {
-            String id = car.getId();
-            if (!orderedCarIds.contains(id)) {
-                // NOT ordered → open the order sheet
+            String carId = car.getId();
+            String status = orderStatusMap.get(carId); // null | "pending" | "confirmed"
+
+            if (status == null) {
+                // open the order form
                 OrderBottomSheet sheet = OrderBottomSheet.newInstance(
                         car.getId(),
                         car.getModel(),
@@ -111,22 +124,27 @@ public class MainActivity extends AppCompatActivity {
                         car.getPrice()
                 );
                 sheet.setOnOrderPlacedListener(orderedCarId -> {
-                    orderedCarIds.add(orderedCarId);
-                    carAdapter.setOrderedCarIds(orderedCarIds);
+                    // optimistic UI; Firestore listener will confirm
+                    orderStatusMap.put(orderedCarId, "pending");
+                    carAdapter.setOrderStatusMap(orderStatusMap);
                 });
                 sheet.show(getSupportFragmentManager(), "orderSheet");
-            } else {
-                // Already active → allow cancel (pending only) with confirm dialog
+                return;
+            }
+
+            if ("pending".equals(status)) {
+                // allow cancel while pending
                 new androidx.appcompat.app.AlertDialog.Builder(this)
                         .setTitle("Cancel order?")
                         .setMessage("You can cancel while the order is still pending.")
                         .setPositiveButton("Yes", (d, w) -> {
                             FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
                             if (u == null) return;
-                            orderService.cancelPendingOrder(u.getUid(), id)
+                            new OrderService(new OrderRepository())
+                                    .cancelPendingOrder(u.getUid(), carId)
                                     .addOnSuccessListener(v -> {
-                                        orderedCarIds.remove(id);
-                                        carAdapter.setOrderedCarIds(orderedCarIds);
+                                        orderStatusMap.remove(carId);
+                                        carAdapter.setOrderStatusMap(orderStatusMap);
                                         Toast.makeText(this, "Order cancelled", Toast.LENGTH_SHORT).show();
                                     })
                                     .addOnFailureListener(e ->
@@ -134,8 +152,15 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .setNegativeButton("No", null)
                         .show();
+                return;
+            }
+
+            if ("confirmed".equals(status)) {
+                Toast.makeText(this, "Order approved. Thank you!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        // Details
         carAdapter.setOnDetailsClickListener(car -> {
             String specs = buildSpecs(car);
             CarDetailsBottomSheet sheet = CarDetailsBottomSheet.newInstance(
@@ -149,13 +174,42 @@ public class MainActivity extends AppCompatActivity {
             sheet.show(getSupportFragmentManager(), "carDetails");
         });
 
-        carRecyclerView.setAdapter(carAdapter);
-
         loadCars();
-        fetchUserOrdersAndMarkButtons();
+        listenToUserOrders(); // realtime
     }
 
-    // Toolbar menu (Search + Profile avatar actionView)
+    // Real-time listen to ACTIVE orders and map to carId -> status
+    private void listenToUserOrders() {
+        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        if (u == null) return;
+
+        ordersListener = orderService.listenToActiveOrdersByUser(u.getUid(), (snap, e) -> {
+            if (e != null) {
+                Toast.makeText(this, "Failed to listen orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            orderStatusMap.clear();
+            if (snap != null) {
+                for (DocumentSnapshot d : snap.getDocuments()) {
+                    String carId = d.getString("carId");
+                    String st = d.getString("status");
+                    if (carId != null && st != null) orderStatusMap.put(carId, st);
+                }
+            }
+            carAdapter.setOrderStatusMap(orderStatusMap);
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (ordersListener != null) {
+            ordersListener.remove();
+            ordersListener = null;
+        }
+    }
+
+    // 🔍 Toolbar menu (Search + Profile avatar)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.top_app_bar, menu);
@@ -172,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
             EditText et = sv.findViewById(androidx.appcompat.R.id.search_src_text);
             if (et != null) {
                 et.setTextColor(Color.WHITE);
-                et.setHintTextColor(0xB3FFFFFF); // white with alpha
+                et.setHintTextColor(0xB3FFFFFF);
             }
             ImageView mag   = sv.findViewById(androidx.appcompat.R.id.search_mag_icon);
             ImageView close = sv.findViewById(androidx.appcompat.R.id.search_close_btn);
@@ -211,10 +265,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // Profile avatar (custom actionView if present; else fallback to menu click)
+        // Profile avatar
         MenuItem profileItem = menu.findItem(R.id.action_profile);
         if (profileItem != null) {
-            View avatarView = profileItem.getActionView(); // requires app:actionLayout in menu item
+            View avatarView = profileItem.getActionView();
             if (avatarView != null) {
                 TextView tv = avatarView.findViewById(R.id.tvAvatarInitialSmall);
                 View container = avatarView.findViewById(R.id.avatarContainerSmall);
@@ -239,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // Fallback if there is NO custom actionView for action_profile
+    // Fallback if no custom actionView
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_profile) {
@@ -249,7 +303,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // stable color per user
     private int pickStableColor(String key) {
         int hash = (key == null ? 0 : key.hashCode());
         float hue = (hash & 0xFFFFFF) % 360;
@@ -265,55 +318,16 @@ public class MainActivity extends AppCompatActivity {
                 fresh.add(c);
             }
             carAdapter.replaceData(fresh);
-            carAdapter.setOrderedCarIds(orderedCarIds);
+            carAdapter.setOrderStatusMap(orderStatusMap);
         }, e -> Toast.makeText(this, "Failed to load cars: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
-    private void fetchUserOrdersAndMarkButtons() {
-        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-        if (u == null) return;
-
-        // Only mark cards for ACTIVE orders (pending or confirmed)
-        orderService.getActiveOrdersByUser(u.getUid())
-                .addOnSuccessListener(qs -> {
-                    orderedCarIds.clear();
-                    for (DocumentSnapshot d : qs.getDocuments()) {
-                        String carId = d.getString("carId");
-                        if (carId != null) orderedCarIds.add(carId);
-                    }
-                    carAdapter.setOrderedCarIds(orderedCarIds);
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to fetch orders: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawers();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Intent intent = new Intent(this, LogInActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
-    }
-
     private String buildSpecs(Car c) {
-        java.util.List<String> lines = new java.util.ArrayList<>();
-        if (c.getYear() != null)        lines.add("Year: " + c.getYear());
-        if (c.getMileageKm() != null)   lines.add("Kilometers: " + c.getMileageKm());
-        if (c.getFuelType() != null)    lines.add("Fuel: " + c.getFuelType());
-        if (c.getTransmission() != null)lines.add("Transmission: " + c.getTransmission());
+        List<String> lines = new ArrayList<>();
+        if (c.getYear() > 0) lines.add("Year: " + c.getYear());
+        if (c.getMileageKm() != null) lines.add("Kilometers: " + c.getMileageKm());
+        if (c.getFuelType() != null) lines.add("Fuel: " + c.getFuelType());
+        if (c.getTransmission() != null) lines.add("Transmission: " + c.getTransmission());
         return android.text.TextUtils.join("\n", lines);
     }
-
 }
