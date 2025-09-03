@@ -1,5 +1,6 @@
 package com.example.carsellingshop.Adapters;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.carsellingshop.Activities.EditCarActivity;
 import com.example.carsellingshop.Model.Car;
 import com.example.carsellingshop.R;
 
@@ -41,6 +43,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     public interface OnDeleteClickListener { void onDeleteClick(Car car); }
     private OnDeleteClickListener deleteClickListener;
     public void setOnDeleteClickListener(OnDeleteClickListener l) { this.deleteClickListener = l; }
+
+
+    public interface OnEditClickListener{void onEditClick(Car car);}
+    private OnEditClickListener editClickListener;
+    public void setOnEditClickListener(OnEditClickListener l){this.editClickListener=l;}
 
     // ---- Fields ----
     private final boolean isAdmin;  // admin/user mode
@@ -123,9 +130,27 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
                 if (deleteClickListener != null) deleteClickListener.onDeleteClick(car);
             });
 
+            holder.btnAdminEdit.setVisibility(View.VISIBLE);
+            holder.btnAdminEdit.setOnClickListener(v->{
+                Intent intent = new Intent(v.getContext(), EditCarActivity.class);
+                intent.putExtra("CAR_ID", car.getId());
+                intent.putExtra("MODEL", car.getModel());
+                intent.putExtra("PRICE", car.getPrice());
+                intent.putExtra("DESCRIPTION", car.getDescription());
+                intent.putExtra("DISCOUNT", car.getDiscount());
+                intent.putExtra("YEAR", car.getYear());
+                intent.putExtra("MILEAGE", car.getMileageKm());
+                intent.putExtra("FUEL_TYPE", car.getFuelType());
+                intent.putExtra("TRANSMISSION", car.getTransmission());
+                intent.putExtra("IMAGE_URL", car.getImageUrl());
+                v.getContext().startActivity(intent);
+
+            });
         } else {
             // ---- USER MODE ----
             holder.btnAdminDelete.setVisibility(View.GONE);
+            holder.btnAdminEdit.setVisibility(View.GONE);
+
 
             String status = orderStatusByCarId.get(car.getId()); // null | "pending" | "confirmed"
             styleOrderButton(holder.btnOrder, status);
@@ -155,7 +180,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     public static class CarViewHolder extends RecyclerView.ViewHolder {
         ImageView carImageView;
         TextView carModelTextView, carPriceTag, tvDiscount, tvDescription;
-        Button btnDetails, btnOrder, btnAdminDelete;
+        Button btnDetails, btnOrder, btnAdminDelete, btnAdminEdit;
+
 
         public CarViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -167,6 +193,9 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
             btnDetails = itemView.findViewById(R.id.btnDetails);
             btnOrder = itemView.findViewById(R.id.btnOrder);
             btnAdminDelete = itemView.findViewById(R.id.btnAdminDelete);
+
+            btnAdminEdit=itemView.findViewById(R.id.btnAdminEdit);
+
         }
     }
 
@@ -185,6 +214,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
                         ContextCompat.getColor(b.getContext(), android.R.color.darker_gray)));
             } catch (Exception ignored) {}
             return;
+
         }
         if ("confirmed".equals(status)) {
             b.setEnabled(false);
@@ -195,7 +225,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
             } catch (Exception ignored) {}
             return;
         }
-        // fallback
+
+
         b.setEnabled(true);
         b.setText("ORDER");
         try { b.setBackgroundTintList(null); } catch (Exception ignored) {}

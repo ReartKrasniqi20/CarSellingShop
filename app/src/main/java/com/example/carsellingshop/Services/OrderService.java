@@ -93,7 +93,7 @@ public class OrderService {
                 });
     }
 
-  
+
     /** Utility to normalize any admin-provided status string to canonical value. */
     public static String normalizeStatus(String statusRaw) {
         if (statusRaw == null) return "pending";

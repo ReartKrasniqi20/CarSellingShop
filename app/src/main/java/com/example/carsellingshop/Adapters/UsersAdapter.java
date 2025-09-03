@@ -7,7 +7,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -101,6 +100,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         TextView tvName, tvEmail, tvType;
         Spinner spinnerRole;
         Button btnDelete;
+
         UserViewHolder(View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvName);

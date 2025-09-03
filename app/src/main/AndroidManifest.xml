@@ -32,9 +32,10 @@
 
         <activity android:name=".Activities.ProfileActivity" />
         <activity android:name=".Activities.AboutActivity" />
-        <activity android:name=".Activities.CarDetailsBottomSheet" />
         <activity android:name=".Activities.AdminActivity" />
         <activity android:name=".Activities.AddCarActivity" />
+        <activity android:name=".Activities.EditCarActivity"/>
+
 
 
     </application>

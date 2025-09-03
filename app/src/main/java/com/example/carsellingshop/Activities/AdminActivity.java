@@ -1,6 +1,5 @@
 package com.example.carsellingshop.Activities;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -78,7 +77,7 @@ public class AdminActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Redirect to login if no user
+
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent intent = new Intent(this, LogInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -89,7 +88,7 @@ public class AdminActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Close drawer if open, else go back
+
         if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
