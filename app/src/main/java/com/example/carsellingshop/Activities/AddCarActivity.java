@@ -57,7 +57,6 @@ public class AddCarActivity extends AppCompatActivity {
         int discount = TextUtils.isEmpty(discountStr) ? 0 : Integer.parseInt(discountStr);
         int year = TextUtils.isEmpty(yearStr) ? 0 : Integer.parseInt(yearStr);
 
-        // 🚀 Don’t set ID here — Firestore generates it
         Car car = new Car(
                 null, model, price, imageUrl, description,
                 discount, year, mileage, fuelType, transmission
