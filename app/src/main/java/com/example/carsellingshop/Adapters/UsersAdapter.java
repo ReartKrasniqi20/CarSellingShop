@@ -17,7 +17,6 @@ import com.example.carsellingshop.Model.User;
 import com.example.carsellingshop.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
 import java.util.List;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
@@ -102,8 +101,6 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         TextView tvName, tvEmail, tvType;
         Spinner spinnerRole;
         Button btnDelete;
-
-
         UserViewHolder(View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvName);
@@ -111,7 +108,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             tvType = itemView.findViewById(R.id.tvType);
 
             spinnerRole = itemView.findViewById(R.id.spinnerRole);
-            btnDelete = itemView.findViewById(R.id.btnDeleteUser); 
+            btnDelete = itemView.findViewById(R.id.btnDeleteUser); // add to item_user.xml
 
         }
     }

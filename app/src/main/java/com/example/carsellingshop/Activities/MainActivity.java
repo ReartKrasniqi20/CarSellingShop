@@ -343,13 +343,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private String buildSpecs(Car c) {
-        java.util.List<String> lines = new java.util.ArrayList<>();
-        if (c.getYear() != null)        lines.add("Year: " + c.getYear());
-        if (c.getMileageKm() != null)   lines.add("Kilometers: " + c.getMileageKm());
-        if (c.getFuelType() != null)    lines.add("Fuel: " + c.getFuelType());
-        if (c.getTransmission() != null)lines.add("Transmission: " + c.getTransmission());
-        return android.text.TextUtils.join("\n", lines);
-    }
-
 }
