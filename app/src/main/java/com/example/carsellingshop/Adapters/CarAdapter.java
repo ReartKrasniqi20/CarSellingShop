@@ -86,7 +86,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         }
     }
 
-    // ---- Adapter methods ----
+
     @NonNull
     @Override
 

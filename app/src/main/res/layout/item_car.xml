@@ -105,6 +105,7 @@
                 android:id="@+id/btnAdminDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
+                android:background="@color/grey"
                 android:minWidth="0dp"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
@@ -112,7 +113,6 @@
                 android:textAllCaps="true"
                 android:textColor="@android:color/white"
                 android:textSize="11sp"
-                android:background="@color/grey"
                 app:backgroundTint="@null" />
 
             <Space
