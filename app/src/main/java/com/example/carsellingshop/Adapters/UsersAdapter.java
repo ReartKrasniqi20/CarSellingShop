@@ -88,6 +88,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
                         }
                     });
         });
+
     }
 
     @Override
@@ -105,8 +106,10 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             tvName = itemView.findViewById(R.id.tvName);
             tvEmail = itemView.findViewById(R.id.tvEmail);
             tvType = itemView.findViewById(R.id.tvType);
+
             spinnerRole = itemView.findViewById(R.id.spinnerRole);
             btnDelete = itemView.findViewById(R.id.btnDeleteUser); // add to item_user.xml
+
         }
     }
 }

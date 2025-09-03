@@ -44,9 +44,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     private OnDeleteClickListener deleteClickListener;
     public void setOnDeleteClickListener(OnDeleteClickListener l) { this.deleteClickListener = l; }
 
+
     public interface OnEditClickListener{void onEditClick(Car car);}
     private OnEditClickListener editClickListener;
     public void setOnEditClickListener(OnEditClickListener l){this.editClickListener=l;}
+
     // ---- Fields ----
     private final boolean isAdmin;  // admin/user mode
     // carId -> null|"pending"|"confirmed"
@@ -173,11 +175,13 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         return id != null ? id.hashCode() : RecyclerView.NO_ID;
     }
 
+
     // ---- ViewHolder ----
     public static class CarViewHolder extends RecyclerView.ViewHolder {
         ImageView carImageView;
         TextView carModelTextView, carPriceTag, tvDiscount, tvDescription;
         Button btnDetails, btnOrder, btnAdminDelete, btnAdminEdit;
+
 
         public CarViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -189,7 +193,9 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
             btnDetails = itemView.findViewById(R.id.btnDetails);
             btnOrder = itemView.findViewById(R.id.btnOrder);
             btnAdminDelete = itemView.findViewById(R.id.btnAdminDelete);
+
             btnAdminEdit=itemView.findViewById(R.id.btnAdminEdit);
+
         }
     }
 
@@ -208,6 +214,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
                         ContextCompat.getColor(b.getContext(), android.R.color.darker_gray)));
             } catch (Exception ignored) {}
             return;
+
         }
         if ("confirmed".equals(status)) {
             b.setEnabled(false);
@@ -218,6 +225,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
             } catch (Exception ignored) {}
             return;
         }
+
 
         b.setEnabled(true);
         b.setText("ORDER");

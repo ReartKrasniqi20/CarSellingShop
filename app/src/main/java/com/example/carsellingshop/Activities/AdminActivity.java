@@ -55,6 +55,7 @@ public class AdminActivity extends AppCompatActivity {
         // Tabs setup
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager2 viewPager = findViewById(R.id.viewPager);
+
         AdminPagerAdapter adapter = new AdminPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
@@ -76,6 +77,7 @@ public class AdminActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent intent = new Intent(this, LogInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -86,10 +88,12 @@ public class AdminActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
         if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
             super.onBackPressed();
         }
     }
+
 }

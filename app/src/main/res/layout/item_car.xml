@@ -114,6 +114,7 @@
                 android:textSize="11sp"
                 android:background="@drawable/btn_delete_pill"
                 app:backgroundTint="@null" />
+          
             <Space
                 android:layout_width="8dp"
                 android:layout_height="wrap_content" />
@@ -132,6 +133,7 @@
                 android:background="@drawable/btn_edit_pill"
                 app:backgroundTint="@null"
                 />
+
 
             <Space
                 android:layout_width="8dp"
