@@ -32,6 +32,7 @@ public class OrderService {
 
         // Force workflow state to pending on create
         order.setStatus("pending");
+
         order.setCreatedAt(null);
 
         return repo.addOrder(order);
@@ -43,6 +44,7 @@ public class OrderService {
             EventListener<QuerySnapshot> listener
     ) {
         if (TextUtils.isEmpty(userId)) throw new IllegalArgumentException("userId required");
+
 
         return db.collection("orders")
                 .whereEqualTo("userId", userId)
@@ -60,6 +62,7 @@ public class OrderService {
     }
 
     /** Check if user has an ACTIVE order for a car. */
+
     public Task<QuerySnapshot> hasUserOrderedCar(String userId, String carId) {
         if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(carId)) {
             throw new IllegalArgumentException("userId & carId required");
@@ -90,6 +93,7 @@ public class OrderService {
                 });
     }
 
+  
     /** Utility to normalize any admin-provided status string to canonical value. */
     public static String normalizeStatus(String statusRaw) {
         if (statusRaw == null) return "pending";
@@ -108,6 +112,7 @@ public class OrderService {
             default:
                 return "pending";
         }
+
     }
 
     /** Backward-compat: route old callers to pending-only cancel. */
@@ -115,7 +120,7 @@ public class OrderService {
         return cancelPendingOrder(uid, carId);
     }
 
-    /** (Optional) Admin confirm an order by id. */
+    /** Admin confirm an order by id. */
     public Task<Void> confirmOrderById(String orderId) {
         if (TextUtils.isEmpty(orderId)) throw new IllegalArgumentException("orderId required");
         return db.collection("orders").document(orderId)

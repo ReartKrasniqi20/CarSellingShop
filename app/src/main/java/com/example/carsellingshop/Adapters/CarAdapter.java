@@ -150,6 +150,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         return id != null ? id.hashCode() : RecyclerView.NO_ID;
     }
 
+
     // ---- ViewHolder ----
     public static class CarViewHolder extends RecyclerView.ViewHolder {
         ImageView carImageView;
