@@ -5,9 +5,9 @@
         <item>confirmed</item>
         <item>cancelled</item>
     </string-array>
+  
     <string-array name="users_role">
         <item>normal user</item>
         <item>admin</item>
     </string-array>
-
 </resources>

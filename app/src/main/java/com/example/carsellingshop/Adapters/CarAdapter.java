@@ -117,7 +117,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
             // ---- ADMIN MODE ----
             holder.btnOrder.setVisibility(View.GONE);
             holder.btnDetails.setVisibility(View.GONE);
-
             holder.btnAdminDelete.setVisibility(View.VISIBLE);
             holder.btnAdminDelete.setOnClickListener(v -> {
                 if (deleteClickListener != null) deleteClickListener.onDeleteClick(car);
@@ -129,7 +128,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
 
             String status = orderStatusByCarId.get(car.getId()); // null | "pending" | "confirmed"
             styleOrderButton(holder.btnOrder, status);
-
             holder.btnOrder.setOnClickListener(v -> {
                 if (orderClickListener != null) orderClickListener.onOrderClick(car);
             });
@@ -149,6 +147,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         String id = visibleList.get(position).getId();
         return id != null ? id.hashCode() : RecyclerView.NO_ID;
     }
+
 
     // ---- ViewHolder ----
     public static class CarViewHolder extends RecyclerView.ViewHolder {

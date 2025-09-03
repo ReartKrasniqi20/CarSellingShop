@@ -1,5 +1,6 @@
 package com.example.carsellingshop.Activities;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -55,6 +56,7 @@ public class AdminActivity extends AppCompatActivity {
         // Tabs setup
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager2 viewPager = findViewById(R.id.viewPager);
+
         AdminPagerAdapter adapter = new AdminPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
@@ -94,4 +96,5 @@ public class AdminActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
 }
