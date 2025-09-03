@@ -16,7 +16,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Arrays;
 import java.util.Locale;
 
-
 public class OrderService {
     private final OrderRepository repo;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -33,7 +32,6 @@ public class OrderService {
 
         // Force workflow state to pending on create
         order.setStatus("pending");
-
         order.setCreatedAt(null);
 
         return repo.addOrder(order);
@@ -46,7 +44,6 @@ public class OrderService {
     ) {
         if (TextUtils.isEmpty(userId)) throw new IllegalArgumentException("userId required");
 
-        // Tolerate both "confirmed" and "approved" just in case the admin UI once wrote "approved"
         return db.collection("orders")
                 .whereEqualTo("userId", userId)
                 .whereIn("status", Arrays.asList("pending", "confirmed", "approved"))
@@ -63,7 +60,6 @@ public class OrderService {
     }
 
     /** Check if user has an ACTIVE order for a car. */
-
     public Task<QuerySnapshot> hasUserOrderedCar(String userId, String carId) {
         if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(carId)) {
             throw new IllegalArgumentException("userId & carId required");
@@ -94,13 +90,6 @@ public class OrderService {
                 });
     }
 
-    /** Admin confirm an order by id — always store canonical "confirmed". */
-    public Task<Void> confirmOrderById(String orderId) {
-        if (TextUtils.isEmpty(orderId)) throw new IllegalArgumentException("orderId required");
-        return db.collection("orders").document(orderId)
-                .update("status", "confirmed");
-    }
-
     /** Utility to normalize any admin-provided status string to canonical value. */
     public static String normalizeStatus(String statusRaw) {
         if (statusRaw == null) return "pending";
@@ -118,20 +107,7 @@ public class OrderService {
             case "pending":
             default:
                 return "pending";
-
         }
-        return db.collection("orders")
-                .whereEqualTo("userId", uid)
-                .whereEqualTo("carId", carId)
-                .whereEqualTo("status", "pending")
-                .limit(1)
-                .get()
-                .onSuccessTask(qs -> {
-                    if (qs.isEmpty()) return Tasks.forResult(null);
-                    DocumentReference ref = qs.getDocuments().get(0).getReference();
-                    return ref.update("status", "cancelled",
-                            "cancelledAt", FieldValue.serverTimestamp());
-                });
     }
 
     /** Backward-compat: route old callers to pending-only cancel. */
