@@ -68,7 +68,7 @@ public class AddCarActivity extends AppCompatActivity {
                 .add(car)
                 .addOnSuccessListener(docRef -> {
                     Toast.makeText(this, "Car added", Toast.LENGTH_SHORT).show();
-                    finish(); // close after saving
+                    finish();
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());

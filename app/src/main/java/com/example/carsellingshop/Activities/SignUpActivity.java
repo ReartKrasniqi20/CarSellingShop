@@ -26,7 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        // 🔹 Initialize views
+
         nameEditText = findViewById(R.id.nameEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -44,7 +44,7 @@ public class SignUpActivity extends AppCompatActivity {
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
-        // 🔹 Validations
+
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) ||
                 TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -76,7 +76,7 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        // 🔹 Let Firebase enforce password strength (min 6 chars)
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -86,12 +86,12 @@ public class SignUpActivity extends AppCompatActivity {
 
                             String uid = fUser.getUid();
 
-                            // 🔹 Save user to Firestore
+
                             User user = new User(
-                                    uid,        // Firebase UID
-                                    name,       // username
+                                    uid,
+                                    name,
                                     email,
-                                    "normal"    // default userType
+                                    "normal"
                             );
 
                             FirebaseFirestore.getInstance()

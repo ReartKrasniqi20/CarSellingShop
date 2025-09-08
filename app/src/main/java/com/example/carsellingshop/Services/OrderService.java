@@ -24,7 +24,6 @@ public class OrderService {
         this.repo = repo;
     }
 
-    /** Create a NEW order as PENDING. */
     public Task<String> placeOrder(Order order) {
         if (order == null) throw new IllegalArgumentException("Order is null");
         if (TextUtils.isEmpty(order.getUserId())) throw new IllegalArgumentException("userId required");
@@ -38,7 +37,7 @@ public class OrderService {
         return repo.addOrder(order);
     }
 
-    /** Real-time: ACTIVE (pending or confirmed/approved) orders for user. */
+
     public ListenerRegistration listenToActiveOrdersByUser(
             String userId,
             EventListener<QuerySnapshot> listener
@@ -52,7 +51,7 @@ public class OrderService {
                 .addSnapshotListener(listener);
     }
 
-    /** Cancel ONLY a pending order for this user+car. */
+
     public Task<Void> cancelPendingOrder(String uid, String carId) {
         if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(carId)) {
             throw new IllegalArgumentException("uid & carId required");
@@ -72,7 +71,7 @@ public class OrderService {
     }
 
 
-    /** Utility to normalize any admin-provided status string to canonical value. */
+
     public static String normalizeStatus(String statusRaw) {
         if (statusRaw == null) return "pending";
         String s = statusRaw.trim().toLowerCase(Locale.US);

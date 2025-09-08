@@ -4,33 +4,26 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.ServerTimestamp;
 
 public class Order {
-    // Document metadata
-    private String id;            // Firestore doc id (optional to store in the doc)
-
-    // User / car linkage
-    private String userId;        // FirebaseAuth uid
-    private String userEmail;     // convenience
-    private String carId;         // Firestore car doc id
-    private String carModel;      // optional snapshot for quick lists
-    private String carImageUrl;   // optional snapshot
-    private double price;         // optional snapshot
-
-    // Buyer-provided form fields
+    private String id;
+    private String userId;
+    private String userEmail;
+    private String carId;
+    private String carModel;
+    private String carImageUrl;
+    private double price;
     private String name;
     private String phone;
     private String address;
 
-    // Workflow status: "pending" | "confirmed" | "cancelled"
     private String status;
 
-    // Timestamps
     @ServerTimestamp
-    private Timestamp createdAt;   // set by server on create
-    private Timestamp cancelledAt; // optional, set when cancelling
+    private Timestamp createdAt;
+    private Timestamp cancelledAt;
 
     public Order() { }
 
-    // ---- Getters / Setters ----
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

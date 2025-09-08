@@ -23,21 +23,21 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        // Toolbar setup
+
         Toolbar toolbar = findViewById(R.id.topToolbar2);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("About Us");
         }
 
-        // Drawer + Navigation setup
+
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
 
-        // Open drawer on nav icon click
+
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        // Handle nav menu clicks
+
         navigationView.setNavigationItemSelectedListener(item -> {
             item.setChecked(true);
             int id = item.getItemId();
@@ -66,7 +66,6 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Redirect to login if no user
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent intent = new Intent(this, LogInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -77,7 +76,6 @@ public class AboutActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Close drawer if open, else go back
         if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
