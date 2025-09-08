@@ -5,6 +5,12 @@
     <color name="purple_500">#6200EE</color>
     <color name="grey">#212121</color>
     <color name="blue">#24a0ed</color>
+    <color name="red">#8B0000</color>
+    <color name="green">#4CAF50</color>
+    <color name="deepBlue">#1976D2</color>
+    <color name="freshGreen">#43A047</color>
+    <color name="freshGrey">#757575</color>
+
 
 
 </resources>

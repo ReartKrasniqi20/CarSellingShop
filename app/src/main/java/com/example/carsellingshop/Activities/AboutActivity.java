@@ -44,12 +44,9 @@ public class AboutActivity extends AppCompatActivity {
 
             if (id == R.id.nav_home) {
                 startActivity(new Intent(this, MainActivity.class));
-            } else if (id == R.id.nav_favorites) {
-                // TODO: open Favorites activity
             } else if (id == R.id.nav_profile) {
                 startActivity(new Intent(this, ProfileActivity.class));
             } else if (id == R.id.nav_aboutus) {
-                // already here
                 drawerLayout.closeDrawers();
                 return true;
             } else if (id == R.id.nav_logout) {
