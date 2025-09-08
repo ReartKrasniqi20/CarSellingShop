@@ -14,18 +14,4 @@ public class OrderRepository {
         order.setId(ref.getId());
         return ref.set(order).continueWith(task -> ref.getId());
     }
-
-    public Task<QuerySnapshot> getOrdersByUser(String userId) {
-        return db.collection("orders")
-                .whereEqualTo("userId", userId)
-                .get();
-    }
-
-    public Task<QuerySnapshot> getOrdersForCarAndUser(String carId, String userId) {
-        return db.collection("orders")
-                .whereEqualTo("carId", carId)
-                .whereEqualTo("userId", userId)
-                .limit(1)
-                .get();
-    }
 }
