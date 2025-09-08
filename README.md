@@ -1,99 +1,131 @@
-# 🚗 Car Import Ida (CarSellingShop)
+# 🚗 Car Selling Shop (Car Import Ida)
 
-Car Import Ida is an Android application that simulates a car selling and ordering platform, built for the Android course project. It allows users to browse cars, check details, place orders, and manage their profile. Admins can add, edit, and delete car listings directly from the app.
+An Android application for browsing, ordering, and managing imported cars.  
+This project was built as part of a university assignment and demonstrates full-stack mobile development with *Firebase Firestore, **Firebase Authentication*, and modern Android development practices.
 
-## ✨ Features
+---
 
-### 👥 Authentication
-- Sign Up / Sign In
-- Forgot Password (reset via Firebase)
-- Validation (password must contain number & special character)
-- Error handling with proper messages
-- 2FA (Bonus, optional) – via email
+## 📌 Features
+- 🔑 *Authentication*
+    - Sign Up / Sign In
+    - Password Reset
+    - Input validation (strong password rules)
+- 👤 *User Profile*
+    - View profile details
+    - Edit username (updates stored in Firestore)
+- 🚘 *Car Management*
+    - Browse cars with details
+    - Order cars (Firestore CRUD)
+    - Admin can *Add, **Edit, **Delete* cars
+- 📱 *Responsive UI*
+    - Works on different screen sizes (phones & tablets)
+    - Material Design components
+- 🔔 *Notifications*
+    - Welcome or order confirmation notifications
+- 🔒 *Security*
+    - Password hashing
+    - Firestore rules for protecting user data
+- ✨ *Extra*
+    - Smooth animations
+    - Drawer navigation & modern UI design
 
-### 📱 UI & Responsiveness
-- Supports multiple screen sizes (phones & tablets)
-- Clean material design with CardView & Material Components
-- Custom styled buttons (red = delete, green = confirm, etc.)
-- Profile avatar with dynamic color background
-
-### 🚀 Functionality
-- CRUD operations for cars:
-    - Add car
-    - Edit car
-    - Delete car
-    - View details
-- Order cars (place order with name, phone, address)
-- Notifications (welcome or order notification)
-- Profile management:
-    - View username & email
-    - Edit username (saved to Firestore)
-- Admin features:
-    - Edit existing cars
-    - Delete cars
-
-### 🔒 Security
-- Firebase Authentication (secure login)
-- Firebase Firestore with rules (per-user data access)
-- Passwords stored securely with Firebase
-- Sensitive operations checked for signed-in user
+---
 
 ## 🛠 Tech Stack
-- Language: Java
-- IDE: Android Studio
-- Database & Auth: Firebase Authentication + Firestore
-- UI: Material Design Components, CardView, RecyclerView
-- Version Control: Git & GitHub
+- *Language:* Java
+- *UI:* XML + Material Components
+- *Database:* Firebase Firestore
+- *Authentication:* Firebase Auth
+- *Tools:* Android Studio, Git, GitHub
+
+---
 
 ## 📂 Project Structure
 
-app/ └── java/com/example/carsellingshop/ ├── Activities/     # All Activities (Login, Signup, Main, Profile, Admin, etc.) ├── Adapters/       # RecyclerView Adapters ├── Models/         # Car, Order, User models ├── Services/       # OrderService, CarService (manages Firestore access) └── ...
+CarSellingShop/ │-- app/                     # Main Android app code │   ├── Activities/           # Activities (Login, Signup, Profile, Admin, etc.) │   ├── Adapters/             # RecyclerView adapters │   ├── Models/               # Data models (Car, Order, User) │   ├── Services/             # Firestore interaction services │   └── res/                  # Layouts, Drawables, Values (colors, strings) │ │-- .idea/                    # Android Studio settings │-- gradle/                   # Gradle wrapper │-- .gitignore │-- LICENSE │-- README.md                 # Project documentation
 
-## ⚙ Setup Instructions
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/ReartKrasniqi20/CarSellingShop.git
-   cd CarSellingShop
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/CarSellingShop.git
+cd CarSellingShop
 
 2. Open in Android Studio
 
+Open the folder in Android Studio
 
-3. Connect Firebase:
+Let Gradle sync the project
 
-Create a Firebase project in Firebase Console
 
-Add an Android app with your package name
+3. Firebase Setup
 
-Download the google-services.json file
+This project uses Firebase.
+
+Create a Firebase project in the Firebase Console
+
+Enable Authentication and Firestore Database
+
+Download your google-services.json file
 
 Place it inside:
 
 app/google-services.json
 
 
+4. Run the app
 
-4. Sync Gradle
+Connect an emulator or Android device
+
+Click Run ▶
 
 
-5. Run on emulator or physical device
+
+---
+
+📸 Screenshots
+
+Login Screen	Sign Up	Car List
+
+		
+
+
+Car Details	Order Form	Profile
+
+		
 
 
 
-🔑 Notes
+---
 
-Firebase: The app uses Firebase for auth & DB. You must configure your own Firebase project to run it.
+📖 How to Contribute
 
-Security Rules: Firestore rules should be configured to protect user data.
+1. Fork the repository
 
-Admin Access: Admin functionality is based on user role (userType = "admin").
 
+2. Create a new branch (feature/new-feature)
+
+
+3. Commit your changes
+
+
+4. Push to your fork and submit a Pull Request
+
+
+
+
+---
+
+👨‍💻 Author
+
+Reart Krasniqi
+
+
+
+---
 
 📜 License
 
 This project is licensed under the MIT License.
-
-👨‍💻 Authors
-
-Reart Krasniqi
-
-University of Pristina – Faculty of Electrical and Computer Engineering
