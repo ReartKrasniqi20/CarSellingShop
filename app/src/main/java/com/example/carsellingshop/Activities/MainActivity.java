@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private CarAdapter carAdapter;
     private final CarService carService = new CarService();
 
-    // carId -> "pending" | "confirmed"
+
     private final Map<String, String> orderStatusMap = new HashMap<>();
     private final OrderService orderService = new OrderService(new OrderRepository());
     private ListenerRegistration ordersListener; // detach later
@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Toolbar
+
         Toolbar toolbar = findViewById(R.id.topToolbar);
         setSupportActionBar(toolbar);
 
-        // Drawer
+
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
 
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // RecyclerView
+
         carRecyclerView = findViewById(R.id.carRecyclerView);
         carRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         carRecyclerView.setHasFixedSize(true);
@@ -113,13 +113,13 @@ public class MainActivity extends AppCompatActivity {
         carAdapter = new CarAdapter(new ArrayList<>(), false);
         carRecyclerView.setAdapter(carAdapter);
 
-        // Order button logic
+
         carAdapter.setOnOrderClickListener(car -> {
             String carId = car.getId();
-            String status = orderStatusMap.get(carId); // null | "pending" | "confirmed"
+            String status = orderStatusMap.get(carId);
 
             if (status == null) {
-                // open the order form
+
                 OrderBottomSheet sheet = OrderBottomSheet.newInstance(
                         car.getId(),
                         car.getModel(),
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                         car.getPrice()
                 );
                 sheet.setOnOrderPlacedListener(orderedCarId -> {
-                    // optimistic UI; Firestore listener will confirm
+
                     orderStatusMap.put(orderedCarId, "pending");
                     carAdapter.setOrderStatusMap(orderStatusMap);
                 });
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if ("pending".equals(status)) {
-                // allow cancel while pending
+
                 new androidx.appcompat.app.AlertDialog.Builder(this)
                         .setTitle("Cancel order?")
                         .setMessage("You can cancel while the order is still pending.")
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Details
+
         carAdapter.setOnDetailsClickListener(car -> {
             String specs = buildSpecs(car);
             CarDetailsBottomSheet sheet = CarDetailsBottomSheet.newInstance(
@@ -178,10 +178,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         loadCars();
-        listenToUserOrders(); // realtime
+        listenToUserOrders();
     }
 
-    // Real-time listen to ACTIVE orders and map to carId -> status
+
     private void listenToUserOrders() {
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
         if (u == null) return;
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // Toolbar menu (Search + Profile avatar actionView)
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -214,12 +214,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // 🔍 Toolbar menu (Search + Profile avatar)
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.top_app_bar, menu);
 
-        // Search
+
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView sv = (SearchView) searchItem.getActionView();
         if (sv != null) {
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
             sv.setIconifiedByDefault(true);
             sv.setMaxWidth(Integer.MAX_VALUE);
 
-            // Make search text/icons white
+
             EditText et = sv.findViewById(androidx.appcompat.R.id.search_src_text);
             if (et != null) {
                 et.setTextColor(Color.WHITE);
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
             searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                 @Override public boolean onMenuItemActionExpand(MenuItem item) { return true; }
                 @Override public boolean onMenuItemActionCollapse(MenuItem item) {
-                    carAdapter.getFilter().filter(""); // reset list
+                    carAdapter.getFilter().filter("");
                     return true;
                 }
             });
@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Fallback if no custom actionView
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_profile) {

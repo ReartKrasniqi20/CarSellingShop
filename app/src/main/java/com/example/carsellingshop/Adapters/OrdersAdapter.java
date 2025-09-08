@@ -48,7 +48,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.tvPhone.setText("Phone: " + (o.getPhone() != null ? o.getPhone() : "N/A"));
         holder.tvAddress.setText("Address: " + (o.getAddress() != null ? o.getAddress() : "N/A"));
 
-        // ----- STATUS SPINNER -----
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 holder.itemView.getContext(),
                 R.array.order_status_array,

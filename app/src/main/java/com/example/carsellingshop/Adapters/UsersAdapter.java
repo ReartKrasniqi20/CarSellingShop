@@ -40,7 +40,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         holder.tvEmail.setText(u.getEmail());
         holder.tvType.setText("Type: " + u.getUserType());
 
-        // Spinner setup
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 holder.itemView.getContext(),
                 R.array.users_role,
@@ -49,7 +49,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.spinnerRole.setAdapter(adapter);
 
-        // set initial selection
+
         if (u.getUserType() != null) {
             int pos = adapter.getPosition(u.getUserType());
             if (pos >= 0) holder.spinnerRole.setSelection(pos);
@@ -74,7 +74,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // ---- Delete user ----
+
         holder.btnDelete.setOnClickListener(v -> {
             FirebaseFirestore.getInstance()
                     .collection("users")

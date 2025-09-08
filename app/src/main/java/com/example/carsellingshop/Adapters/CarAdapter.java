@@ -49,14 +49,12 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     private OnEditClickListener editClickListener;
     public void setOnEditClickListener(OnEditClickListener l){this.editClickListener=l;}
 
-    // ---- Fields ----
-    private final boolean isAdmin;  // admin/user mode
-    // carId -> null|"pending"|"confirmed"
+    private final boolean isAdmin;
     private final Map<String, String> orderStatusByCarId = new HashMap<>();
     private final List<Car> visibleList;
     private final List<Car> fullList;
 
-    // ---- Constructor ----
+
     public CarAdapter(List<Car> initial, boolean isAdmin) {
         this.visibleList = new ArrayList<>(initial);
         this.fullList = new ArrayList<>(initial);
@@ -64,7 +62,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
         setHasStableIds(true);
     }
 
-    // ---- Manage Data ----
+
 
     public void replaceData(List<Car> newData) {
         fullList.clear();
@@ -75,22 +73,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     }
 
 
-    /** Replace the entire status map (user mode). */
+
     public void setOrderStatusMap(Map<String, String> map) {
         orderStatusByCarId.clear();
         if (map != null) orderStatusByCarId.putAll(map);
         notifyDataSetChanged();
-    }
-
-    /** Update one car’s status (user mode). */
-    public void setOrderStatusForCar(String carId, String statusOrNull) {
-        if (carId == null) return;
-        if (statusOrNull == null) orderStatusByCarId.remove(carId);
-        else orderStatusByCarId.put(carId, statusOrNull);
-        for (int i = 0; i < visibleList.size(); i++) {
-            Car c = visibleList.get(i);
-            if (carId.equals(c.getId())) { notifyItemChanged(i); break; }
-        }
     }
 
 
@@ -121,7 +108,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
                 .into(holder.carImageView);
 
         if (isAdmin) {
-            // ---- ADMIN MODE ----
+
             holder.btnOrder.setVisibility(View.GONE);
             holder.btnDetails.setVisibility(View.GONE);
 
@@ -147,7 +134,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
 
             });
         } else {
-            // ---- USER MODE ----
+
             holder.btnAdminDelete.setVisibility(View.GONE);
             holder.btnAdminEdit.setVisibility(View.GONE);
 
@@ -176,7 +163,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
     }
 
 
-    // ---- ViewHolder ----
+
     public static class CarViewHolder extends RecyclerView.ViewHolder {
         ImageView carImageView;
         TextView carModelTextView, carPriceTag, tvDiscount, tvDescription;

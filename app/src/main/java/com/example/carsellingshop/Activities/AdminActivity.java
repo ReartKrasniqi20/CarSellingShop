@@ -27,18 +27,18 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        // Toolbar setup
+
         Toolbar toolbar = findViewById(R.id.topToolbarAdmin);
         setSupportActionBar(toolbar);
 
-        // Drawer + Navigation setup
+
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
 
-        // Open drawer on nav icon click
+
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        // Handle nav menu clicks
+
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_logout) {
@@ -52,7 +52,7 @@ public class AdminActivity extends AppCompatActivity {
             return false;
         });
 
-        // Tabs setup
+
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager2 viewPager = findViewById(R.id.viewPager);
 

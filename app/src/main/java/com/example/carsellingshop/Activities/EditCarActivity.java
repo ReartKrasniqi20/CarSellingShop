@@ -31,7 +31,7 @@ public class EditCarActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // Inputs
+
         etModel = findViewById(R.id.etModel);
         etPrice = findViewById(R.id.etPrice);
         etDescription = findViewById(R.id.etDescription);
@@ -43,7 +43,7 @@ public class EditCarActivity extends AppCompatActivity {
         etImageUrl = findViewById(R.id.etImageUrl);
         btnSave = findViewById(R.id.btnSave);
 
-        // Get intent extras from CarAdapter when admin clicks edit
+
         carId = getIntent().getStringExtra("CAR_ID");
         etModel.setText(getIntent().getStringExtra("MODEL"));
         etPrice.setText(String.valueOf(getIntent().getDoubleExtra("PRICE", 0.0)));
@@ -78,7 +78,7 @@ public class EditCarActivity extends AppCompatActivity {
         int discount = TextUtils.isEmpty(discountStr) ? 0 : Integer.parseInt(discountStr);
         int year = TextUtils.isEmpty(yearStr) ? 0 : Integer.parseInt(yearStr);
 
-        // Put updated fields into a map
+
         Map<String, Object> updates = new HashMap<>();
         updates.put("model", model);
         updates.put("price", price);

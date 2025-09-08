@@ -34,15 +34,15 @@ public class LogInActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        // 🔹 Login button
+
         loginButton.setOnClickListener(v -> loginUser());
 
-        // 🔹 Go to SignUp
+
         signUpButton.setOnClickListener(v -> {
             startActivity(new Intent(LogInActivity.this, SignUpActivity.class));
         });
 
-        // 🔹 Forgot password
+
         forgotPasswordButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
 
