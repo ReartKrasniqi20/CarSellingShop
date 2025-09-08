@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="12dp" />
 
-            <!-- Optional free-text specs (e.g., “Kilometers: 123,000\nYear: 2017…”) -->
+
             <TextView
                 android:id="@+id/tvSpecs"
                 android:layout_width="match_parent"
@@ -72,7 +72,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Close"
-                android:layout_marginTop="16dp" />
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/red"/>
         </LinearLayout>
     </ScrollView>
 </com.google.android.material.card.MaterialCardView>

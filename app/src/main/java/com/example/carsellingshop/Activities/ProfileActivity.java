@@ -5,6 +5,9 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -17,7 +20,6 @@ import com.example.carsellingshop.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -26,6 +28,11 @@ public class ProfileActivity extends AppCompatActivity {
     private NavigationView navigationView;
 
     private TextView tvName, tvEmail, tvAvatarInitial;
+    private EditText etEditName;
+    private Button btnEditName, btnSaveName;
+
+    private FirebaseUser currentUser;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,7 +43,6 @@ public class ProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setTitle("Profile");
 
-        // ----- Drawer -----
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
 
@@ -48,8 +54,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             if (id == R.id.nav_home) {
                 startActivity(new Intent(this, MainActivity.class));
-            } else if (id == R.id.nav_favorites) {
-                // placeholder
             } else if (id == R.id.nav_profile) {
                 drawerLayout.closeDrawers();
                 return true;
@@ -68,48 +72,66 @@ public class ProfileActivity extends AppCompatActivity {
             return true;
         });
 
-        // ----- Profile UI -----
         tvName = findViewById(R.id.tvName);
         tvEmail = findViewById(R.id.tvEmail);
         tvAvatarInitial = findViewById(R.id.tvAvatarInitial);
 
-        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-        if (u != null) {
-            tvEmail.setText(u.getEmail() != null ? u.getEmail() : "—");
+        etEditName = findViewById(R.id.etEditName);
+        btnEditName = findViewById(R.id.btnEditName);
+        btnSaveName = findViewById(R.id.btnSaveName);
 
-            // load Firestore profile
-            FirebaseFirestore.getInstance()
-                    .collection("users")
-                    .document(u.getUid())
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+
+        if (currentUser != null) {
+            tvEmail.setText(currentUser.getEmail());
+
+            db.collection("users").document(currentUser.getUid())
                     .get()
                     .addOnSuccessListener(snapshot -> {
                         if (snapshot.exists()) {
                             String username = snapshot.getString("username");
                             if (username != null && !username.isEmpty()) {
                                 tvName.setText(username);
-
-                                char initial = Character.toUpperCase(username.charAt(0));
-                                tvAvatarInitial.setText(String.valueOf(initial));
+                                tvAvatarInitial.setText(username.substring(0, 1).toUpperCase());
                             } else {
                                 tvName.setText("User");
                                 tvAvatarInitial.setText("U");
                             }
                         }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("ProfileActivity", "Error loading user profile", e);
-                        tvName.setText("User");
-                        tvAvatarInitial.setText("U");
                     });
-
-            // stable color for avatar background
-            String key = (u.getUid() != null) ? u.getUid() : "U";
-            int color = pickStableColor(key);
 
             GradientDrawable bg = (GradientDrawable) findViewById(R.id.avatarContainer)
                     .getBackground().mutate();
-            bg.setColor(color);
+            bg.setColor(pickStableColor(currentUser.getUid()));
         }
+
+        // Edit button
+        btnEditName.setOnClickListener(v -> {
+            etEditName.setVisibility(View.VISIBLE);
+            btnSaveName.setVisibility(View.VISIBLE);
+            etEditName.setText(tvName.getText().toString());
+        });
+
+        // Save button
+        btnSaveName.setOnClickListener(v -> {
+            String newName = etEditName.getText().toString().trim();
+            if (newName.isEmpty()) {
+                etEditName.setError("Name cannot be empty");
+                return;
+            }
+
+            db.collection("users").document(currentUser.getUid())
+                    .update("username", newName)
+                    .addOnSuccessListener(unused -> {
+                        tvName.setText(newName);
+                        tvAvatarInitial.setText(newName.substring(0, 1).toUpperCase());
+                        etEditName.setVisibility(View.GONE);
+                        btnSaveName.setVisibility(View.GONE);
+                    })
+                    .addOnFailureListener(e ->
+                            Log.e("ProfileActivity", "Error updating name", e));
+        });
     }
 
     @Override
@@ -135,8 +157,6 @@ public class ProfileActivity extends AppCompatActivity {
     private int pickStableColor(String s) {
         int hash = s.hashCode();
         float hue = (hash & 0xFFFFFF) % 360;
-        float sat = 0.55f;
-        float val = 0.85f;
-        return Color.HSVToColor(new float[]{hue, sat, val});
+        return Color.HSVToColor(new float[]{hue, 0.55f, 0.85f});
     }
 }

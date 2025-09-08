@@ -31,6 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -80,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
                 if (id == R.id.nav_home) {
                     drawerLayout.closeDrawers();
                     return true;
-                } else if (id == R.id.nav_favorites) {
-                    Toast.makeText(this, "Favorites (coming soon)", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(this, ProfileActivity.class));
                 } else if (id == R.id.nav_aboutus) {
@@ -273,7 +272,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // Profile avatar
         MenuItem profileItem = menu.findItem(R.id.action_profile);
         if (profileItem != null) {
             View avatarView = profileItem.getActionView();
@@ -283,16 +281,28 @@ public class MainActivity extends AppCompatActivity {
                 View container = avatarView.findViewById(R.id.avatarContainerSmall);
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String display = (user != null && user.getEmail() != null && !user.getEmail().isEmpty())
-                        ? user.getEmail()
-                        : "User";
-                char initial = Character.toUpperCase(display.trim().isEmpty() ? 'U' : display.trim().charAt(0));
-                if (tv != null) tv.setText(String.valueOf(initial));
+                if (user != null) {
+                    FirebaseFirestore.getInstance()
+                            .collection("users")
+                            .document(user.getUid())
+                            .get()
+                            .addOnSuccessListener(snapshot -> {
+                                String display;
+                                if (snapshot.exists() && snapshot.getString("username") != null) {
+                                    display = snapshot.getString("username");
+                                } else {
+                                    display = (user.getEmail() != null) ? user.getEmail() : "User";
+                                }
 
-                if (container != null && container.getBackground() instanceof GradientDrawable) {
-                    GradientDrawable bg = (GradientDrawable) container.getBackground().mutate();
-                    String key = (user != null && user.getUid() != null) ? user.getUid() : display;
-                    bg.setColor(pickStableColor(key));
+                                char initial = Character.toUpperCase(display.trim().isEmpty() ? 'U' : display.trim().charAt(0));
+                                if (tv != null) tv.setText(String.valueOf(initial));
+
+                                if (container != null && container.getBackground() instanceof GradientDrawable) {
+                                    GradientDrawable bg = (GradientDrawable) container.getBackground().mutate();
+                                    String key = (user.getUid() != null) ? user.getUid() : display;
+                                    bg.setColor(pickStableColor(key));
+                                }
+                            });
                 }
 
                 avatarView.setOnClickListener(v ->
@@ -304,7 +314,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Fallback if no custom actionView
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_profile) {

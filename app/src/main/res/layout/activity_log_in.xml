@@ -36,20 +36,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Log In"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/deepBlue"/>
 
         <Button
             android:id="@+id/signUpButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Go to Sign Up"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/freshGreen"/>
 
         <Button
             android:id="@+id/forgotPasswordButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Forgot Password?" />
+            android:text="Forgot Password?"
+            android:backgroundTint="@color/freshGrey"/>
     </LinearLayout>
 
 
