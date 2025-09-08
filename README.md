@@ -47,7 +47,11 @@ Car Import Ida is an Android application that simulates a car selling and orderi
 
 ## 📂 Project Structure
 
-app/ └── java/com/example/carsellingshop/ ├── Activities/     # All Activities (Login, Signup, Main, Profile, Admin, etc.) ├── Adapters/       # RecyclerView Adapters ├── Models/         # Car, Order, User models ├── Services/       # OrderService, CarService (manages Firestore access) └── ...
+app/ └── java/com/example/carsellingshop/ ├── Activities/     
+# All Activities (Login, Signup, Main, Profile, Admin, etc.) ├── Adapters/       
+# RecyclerView Adapters ├── Models/         
+# Car, Order, User models ├── Services/       
+# OrderService, CarService (manages Firestore access) └── ...
 
 ## ⚙ Setup Instructions
 1. Clone the repository:
