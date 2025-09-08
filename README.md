@@ -100,7 +100,8 @@ Click Run ▶
 
 ### Admin User
 <p float="left">
-  <img src="https://github.com/user-attachments/assets/eba85098-cb8c-4b91-8488-2a8a539607bf" alt="Admin1" width="250"/>
+<img src="https://github.com/user-attachments/assets/94ed6d83-4835-45a1-8dba-7f93e35aa976" alt="Screenshot1" width="250"/>
+  <img src="https://github.com/user-attachments/assets/107e0698-beaf-4820-8eeb-3384c69c5401" alt="Screenshot2" width="250"/>
   <img src="https://github.com/user-attachments/assets/e655e2ca-0150-416a-88e0-d79b0870fdaf" alt="Admin2" width="250"/>
   <img src="https://github.com/user-attachments/assets/5a81265b-6b21-4282-9ff3-291260c49393" alt="Admin3" width="250"/>
 </p>
