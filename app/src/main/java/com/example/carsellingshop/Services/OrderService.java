@@ -52,28 +52,6 @@ public class OrderService {
                 .addSnapshotListener(listener);
     }
 
-    /** One-shot: ACTIVE orders for user. */
-    public Task<QuerySnapshot> getActiveOrdersByUser(String userId) {
-        if (TextUtils.isEmpty(userId)) throw new IllegalArgumentException("userId required");
-        return db.collection("orders")
-                .whereEqualTo("userId", userId)
-                .whereIn("status", Arrays.asList("pending", "confirmed", "approved"))
-                .get();
-    }
-
-    /** Check if user has an ACTIVE order for a car. */
-
-    public Task<QuerySnapshot> hasUserOrderedCar(String userId, String carId) {
-        if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(carId)) {
-            throw new IllegalArgumentException("userId & carId required");
-        }
-        return db.collection("orders")
-                .whereEqualTo("userId", userId)
-                .whereEqualTo("carId", carId)
-                .whereIn("status", Arrays.asList("pending", "confirmed", "approved"))
-                .get();
-    }
-
     /** Cancel ONLY a pending order for this user+car. */
     public Task<Void> cancelPendingOrder(String uid, String carId) {
         if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(carId)) {
@@ -113,17 +91,5 @@ public class OrderService {
                 return "pending";
         }
 
-    }
-
-    /** Backward-compat: route old callers to pending-only cancel. */
-    public Task<Void> cancelActiveOrder(String uid, String carId) {
-        return cancelPendingOrder(uid, carId);
-    }
-
-    /** Admin confirm an order by id. */
-    public Task<Void> confirmOrderById(String orderId) {
-        if (TextUtils.isEmpty(orderId)) throw new IllegalArgumentException("orderId required");
-        return db.collection("orders").document(orderId)
-                .update("status", "confirmed");
     }
 }
