@@ -41,11 +41,6 @@ This project was built as part of a university assignment and demonstrates full-
 
 ---
 
-## 📂 Project Structure
-
-CarSellingShop/ │-- app/                     # Main Android app code │   ├── Activities/           # Activities (Login, Signup, Profile, Admin, etc.) │   ├── Adapters/             # RecyclerView adapters │   ├── Models/               # Data models (Car, Order, User) │   ├── Services/             # Firestore interaction services │   └── res/                  # Layouts, Drawables, Values (colors, strings) │ │-- .idea/                    # Android Studio settings │-- gradle/                   # Gradle wrapper │-- .gitignore │-- LICENSE │-- README.md                 # Project documentation
-
----
 
 ## 🚀 Getting Started
 
@@ -53,6 +48,7 @@ CarSellingShop/ │-- app/                     # Main Android app code │   ├
 ```bash
 git clone https://github.com/your-username/CarSellingShop.git
 cd CarSellingShop
+```
 
 2. Open in Android Studio
 
@@ -122,7 +118,7 @@ Car Details	Order Form	Profile
 👨‍💻 Author
 
 Reart Krasniqi
-
+University of Pristina - Faculty of Electrical and Computer Engineering
 
 
 ---
