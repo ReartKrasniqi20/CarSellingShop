@@ -77,7 +77,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Save Car"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android: android:backgroundTint="@color/green"/>
 
     </LinearLayout>
 </ScrollView>
