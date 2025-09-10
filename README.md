@@ -30,6 +30,7 @@ This project was built as part of a university assignment and demonstrates full-
     - Smooth animations
     - Drawer navigation & modern UI design
 
+
 ---
 
 ## 🛠 Tech Stack
@@ -82,9 +83,10 @@ Click Run ▶
 
 ---
 
-## 📸 Screenshots  
 
+## 📸 Screenshots  
 ### User Side
+
 <p float="left">
   <img src="https://github.com/user-attachments/assets/6dad507f-a53e-487c-b2d2-6bbb2f19d86b" alt="SignUp" width="200"/>
   <img src="https://github.com/user-attachments/assets/c0a5babb-149f-4c5c-ae74-ae38700aa504" alt="LogIn" width="200"/>
@@ -100,7 +102,9 @@ Click Run ▶
 
 ---
 
+
 ### Admin Side
+
 <p float="left">
 <img src="https://github.com/user-attachments/assets/94ed6d83-4835-45a1-8dba-7f93e35aa976" alt="Screenshot1" width="200"/>
   <img src="https://github.com/user-attachments/assets/107e0698-beaf-4820-8eeb-3384c69c5401" alt="Screenshot2" width="200"/>
@@ -109,7 +113,7 @@ Click Run ▶
 </p>
 
 
-		
+
 
 
 

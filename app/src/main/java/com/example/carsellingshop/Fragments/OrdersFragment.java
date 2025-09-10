@@ -54,7 +54,7 @@ public class OrdersFragment extends Fragment {
                         for (DocumentSnapshot doc : snap.getDocuments()) {
                             Order o = doc.toObject(Order.class);
                             if (o != null) {
-                                o.setId(doc.getId()); //  assign doc id
+                                o.setId(doc.getId());
                                 orderList.add(o);
                             }
                         }

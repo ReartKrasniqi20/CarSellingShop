@@ -1,5 +1,4 @@
 <resources>
-    <!-- 4/8/12 grid -->
     <dimen name="space_xs">4dp</dimen>
     <dimen name="space_s">8dp</dimen>
     <dimen name="space_m">12dp</dimen>
@@ -7,11 +6,9 @@
     <dimen name="space_xl">20dp</dimen>
     <dimen name="space_2xl">24dp</dimen>
 
-    <!-- App-wide content paddings -->
     <dimen name="content_pad_h">16dp</dimen>   <!-- left/right -->
     <dimen name="content_pad_v">20dp</dimen>   <!-- top/bottom -->
 
-    <!-- Cards -->
     <dimen name="card_pad">12dp</dimen>
     <dimen name="card_gap">8dp</dimen>
 </resources>

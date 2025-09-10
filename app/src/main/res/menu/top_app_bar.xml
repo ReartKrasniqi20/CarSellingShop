@@ -10,7 +10,6 @@
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
-    <!-- profile avatar in toolbar -->
     <item
         android:id="@+id/action_profile"
         android:title="Profile"

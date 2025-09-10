@@ -3,6 +3,7 @@ package com.example.carsellingshop.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -77,8 +78,6 @@ public class LogInActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null && user.isEmailVerified()) {
                             String uid = user.getUid();
-
-                            // 🔹 Fetch role from Firestore
                             FirebaseFirestore.getInstance()
                                     .collection("users")
                                     .document(uid)

@@ -6,13 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- MAIN CONTENT -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Toolbar -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topToolbar1"
             style="@style/MyToolbarStyle"
@@ -25,7 +23,6 @@
             app:contentInsetStart="0dp"
             app:navigationIcon="@drawable/ic_menu_24" />
 
-        <!-- Scrollable Profile Content -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -37,7 +34,6 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal">
 
-                <!-- Banner -->
                 <ImageView
                     android:id="@+id/profileBanner"
                     android:layout_width="match_parent"
@@ -45,7 +41,6 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/logo" />
 
-                <!-- Avatar -->
                 <FrameLayout
                     android:id="@+id/avatarContainer"
                     android:layout_width="110dp"
@@ -65,7 +60,6 @@
                         android:textColor="@android:color/white"/>
                 </FrameLayout>
 
-                <!-- Profile Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,7 +83,6 @@
                             android:textStyle="bold"
                             android:layout_marginBottom="6dp"/>
 
-                        <!-- Edit Name Row -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -133,7 +126,6 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Placeholder -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -142,11 +134,11 @@
                     app:cardElevation="4dp"
                     android:padding="16dp">
                 </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
 
-    <!-- Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"

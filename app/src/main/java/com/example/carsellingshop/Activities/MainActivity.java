@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final Map<String, String> orderStatusMap = new HashMap<>();
     private final OrderService orderService = new OrderService(new OrderRepository());
-    private ListenerRegistration ordersListener; // detach later
 
+    private ListenerRegistration ordersListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(this, AboutActivity.class));
                 } else if (id == R.id.nav_logout) {
 
-                    // stop real-time listener before signing out
+
                     if (ordersListener != null) {
                         ordersListener.remove();
                         ordersListener = null;
@@ -313,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_profile) {
@@ -350,6 +349,18 @@ public class MainActivity extends AppCompatActivity {
         if (c.getTransmission() != null) lines.add("Transmission: " + c.getTransmission());
         return android.text.TextUtils.join("\n", lines);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent intent = new Intent(this, LogInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Toast.makeText(MainActivity.this,"You cannot go through without login in",Toast.LENGTH_SHORT).show();
+            startActivity(intent);
+            finish();
+     }
     }
 
 }

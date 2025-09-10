@@ -33,7 +33,6 @@ public class AddCarActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.etDescription);
         etImageUrl = findViewById(R.id.etImageUrl);
         btnSave = findViewById(R.id.btnSaveCar);
-
         btnSave.setOnClickListener(v -> saveCar());
     }
 

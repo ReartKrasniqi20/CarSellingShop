@@ -47,7 +47,6 @@
         android:layout_height="wrap_content"
         android:text="Address: Negroc" />
 
-    <!-- Spinner for admin to change status -->
 
     <Spinner
         android:id="@+id/spinnerStatus"
