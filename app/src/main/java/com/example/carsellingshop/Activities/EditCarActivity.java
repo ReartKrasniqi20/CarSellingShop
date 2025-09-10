@@ -54,7 +54,6 @@ public class EditCarActivity extends AppCompatActivity {
         etFuelType.setText(getIntent().getStringExtra("FUEL_TYPE"));
         etTransmission.setText(getIntent().getStringExtra("TRANSMISSION"));
         etImageUrl.setText(getIntent().getStringExtra("IMAGE_URL"));
-
         btnSave.setOnClickListener(v -> saveChanges());
     }
 

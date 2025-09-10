@@ -1,9 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.CarSellingShop" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <!-- Toolbar container style -->
     </style>
 
     <style name="MyToolbarStyle" parent="Widget.MaterialComponents.Toolbar.Primary">
@@ -11,7 +7,6 @@
         <item name="titleTextColor">@android:color/white</item>
     </style>
 
-    <!-- Title text: smaller + bold -->
     <style name="ToolbarTitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>

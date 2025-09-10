@@ -139,7 +139,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
             holder.btnAdminEdit.setVisibility(View.GONE);
 
 
-            String status = orderStatusByCarId.get(car.getId()); // null | "pending" | "confirmed"
+            String status = orderStatusByCarId.get(car.getId());
             styleOrderButton(holder.btnOrder, status);
 
             holder.btnOrder.setOnClickListener(v -> {
@@ -180,7 +180,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> i
             btnDetails = itemView.findViewById(R.id.btnDetails);
             btnOrder = itemView.findViewById(R.id.btnOrder);
             btnAdminDelete = itemView.findViewById(R.id.btnAdminDelete);
-
             btnAdminEdit=itemView.findViewById(R.id.btnAdminEdit);
 
         }

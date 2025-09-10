@@ -14,7 +14,6 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <!-- Price Badge -->
         <TextView
             android:id="@+id/tvPriceTag"
             android:layout_width="wrap_content"
@@ -25,7 +24,6 @@
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
-        <!-- Discount -->
         <TextView
             android:id="@+id/tvDiscount"
             android:layout_width="wrap_content"
@@ -35,7 +33,6 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp" />
 
-        <!-- Car Image -->
         <ImageView
             android:id="@+id/carImageView"
             android:layout_width="match_parent"
@@ -44,7 +41,6 @@
             android:scaleType="centerCrop"
             android:contentDescription="@string/app_name" />
 
-        <!-- Car Name -->
         <TextView
             android:id="@+id/carModelTextView"
             android:layout_width="wrap_content"

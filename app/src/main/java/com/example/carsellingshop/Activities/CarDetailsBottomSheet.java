@@ -1,5 +1,6 @@
 package com.example.carsellingshop.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,9 @@ public class CarDetailsBottomSheet extends BottomSheetDialogFragment {
     private static final String ARG_IMAGE_URL = "imageUrl";
     private static final String ARG_DESC      = "description";
     private static final String ARG_DISCOUNT  = "discount";
-    private static final String ARG_SPECS     = "specs"; // optional free-text
+    private static final String ARG_SPECS     = "specs";
+
+
 
     public static CarDetailsBottomSheet newInstance(
             String model, double price, String imageUrl,

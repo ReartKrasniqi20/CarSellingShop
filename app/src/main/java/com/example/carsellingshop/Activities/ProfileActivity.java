@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +31,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvName, tvEmail, tvAvatarInitial;
     private EditText etEditName;
     private Button btnEditName, btnSaveName;
-
     private FirebaseUser currentUser;
     private FirebaseFirestore db;
 
@@ -106,14 +106,12 @@ public class ProfileActivity extends AppCompatActivity {
             bg.setColor(pickStableColor(currentUser.getUid()));
         }
 
-        // Edit button
         btnEditName.setOnClickListener(v -> {
             etEditName.setVisibility(View.VISIBLE);
             btnSaveName.setVisibility(View.VISIBLE);
             etEditName.setText(tvName.getText().toString());
         });
 
-        // Save button
         btnSaveName.setOnClickListener(v -> {
             String newName = etEditName.getText().toString().trim();
             if (newName.isEmpty()) {

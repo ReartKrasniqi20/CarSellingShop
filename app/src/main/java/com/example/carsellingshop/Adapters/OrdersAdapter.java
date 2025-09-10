@@ -63,7 +63,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         }
 
         holder.spinnerStatus.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            boolean first = true; // skip initial call
+            boolean first = true;
             @Override
             public void onItemSelected(android.widget.AdapterView<?> parent, View view, int pos, long id) {
                 if (first) { first = false; return; }

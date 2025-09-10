@@ -6,13 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- MAIN CONTENT -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Toolbar (same as Profile) -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topToolbar2"
             style="@style/MyToolbarStyle"
@@ -25,7 +23,6 @@
             app:contentInsetStart="0dp"
             app:navigationIcon="@drawable/ic_menu_24" />
 
-        <!-- About Content -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -38,7 +35,6 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal">
 
-                <!-- App Logo -->
                 <ImageView
                     android:id="@+id/about_logo"
                     android:layout_width="120dp"
@@ -50,7 +46,6 @@
                     android:background="@drawable/logo_circle_bg"
                     android:padding="8dp" />
 
-                <!-- Card with rounded corners -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -69,7 +64,6 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp">
 
-                        <!-- Title -->
                         <TextView
                             android:id="@+id/about_title"
                             android:layout_width="wrap_content"
@@ -80,7 +74,6 @@
                             android:textColor="#212121"
                             android:layout_marginBottom="12dp" />
 
-                        <!-- Description -->
                         <TextView
                             android:id="@+id/about_description"
                             android:layout_width="match_parent"
@@ -91,14 +84,12 @@
                             android:textColor="#616161"
                             android:layout_marginBottom="16dp" />
 
-                        <!-- Divider -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="#E0E0E0"
                             android:layout_marginBottom="16dp"/>
 
-                        <!-- Contact Info: Email -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -121,7 +112,6 @@
                                 android:textColor="#1976D2"/>
                         </LinearLayout>
 
-                        <!-- Contact Info: Website -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -142,13 +132,13 @@
                                 android:textSize="16sp"
                                 android:textColor="#1976D2"/>
                         </LinearLayout>
+
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
 
-    <!-- LEFT DRAWER (same as Profile) -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"

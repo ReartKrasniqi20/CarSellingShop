@@ -148,7 +148,7 @@ public class OrderBottomSheet extends BottomSheetDialogFragment {
 
             orderService.placeOrder(order)
                     .addOnSuccessListener(orderId -> {
-                        order.setId(orderId); //  Save generated Firestore ID back
+                        order.setId(orderId);
                         Toast.makeText(requireContext(), "Order placed!", Toast.LENGTH_SHORT).show();
                         if (listener != null) listener.onOrderPlaced(carId);
                         dismiss();
