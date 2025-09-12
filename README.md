@@ -1,12 +1,12 @@
 
-# 🚗 Car Selling Shop (Car Import Ida)
+# Car Selling Shop (Car Import Ida)
 
 An Android application for browsing, ordering, and managing imported cars.  
 This project was built as part of a university assignment and demonstrates full-stack mobile development with *Firebase Firestore, **Firebase Authentication*, and modern Android development practices.
 
 ---
 
-## 📌 Features
+##  Features
 - 🔑 *Authentication*
     - Sign Up / Sign In
     - Password Reset
@@ -43,7 +43,7 @@ This project was built as part of a university assignment and demonstrates full-
 ---
 
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### 1. Clone the repository
 ```bash
@@ -83,8 +83,7 @@ Click Run ▶
 
 ---
 
-
-## 📸 Screenshots  
+ 
 ### User Side
 
 <p float="left">
@@ -145,6 +144,6 @@ University of Pristina - Faculty of Electrical and Computer Engineering
 
 ---
 
-📜 License
+License
 
 This project is licensed under the MIT License.
