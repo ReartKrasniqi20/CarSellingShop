@@ -51,14 +51,14 @@ git clone https://github.com/your-username/CarSellingShop.git
 cd CarSellingShop
 ```
 
-2. Open in Android Studio
+### 2. Open in Android Studio
 
 Open the folder in Android Studio
 
 Let Gradle sync the project
 
 
-3. Firebase Setup
+### 3. Firebase Setup
 
 This project uses Firebase.
 
@@ -73,7 +73,7 @@ Place it inside:
 app/google-services.json
 
 
-4. Run the app
+### 4. Run the app
 
 Connect an emulator or Android device
 
