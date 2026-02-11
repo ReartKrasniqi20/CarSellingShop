@@ -7,26 +7,26 @@ This project was built as part of a university assignment and demonstrates full-
 ---
 
 ##  Features
-- 🔑 *Authentication*
+-  *Authentication*
     - Sign Up / Sign In
     - Password Reset
     - Input validation (strong password rules)
-- 👤 *User Profile*
+-  *User Profile*
     - View profile details
     - Edit username (updates stored in Firestore)
-- 🚘 *Car Management*
+-  *Car Management*
     - Browse cars with details
     - Order cars (Firestore CRUD)
     - Admin can *Add, **Edit, **Delete* cars
-- 📱 *Responsive UI*
+-  *Responsive UI*
     - Works on different screen sizes (phones & tablets)
     - Material Design components
-- 🔔 *Notifications*
+-  *Notifications*
     - Welcome or order confirmation notifications
-- 🔒 *Security*
+-  *Security*
     - Password hashing
     - Firestore rules for protecting user data
-- ✨ *Extra*
+-  *Extra*
     - Smooth animations
     - Drawer navigation & modern UI design
 
