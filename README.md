@@ -1,5 +1,5 @@
 
-# Car Import Ida
+# CAR IMPORT IDA
 
 An Android application for browsing, ordering, and managing imported cars.  
 This project was built as part of a university assignment and demonstrates full-stack mobile development with *Firebase Firestore, **Firebase Authentication*, and modern Android development practices.
